@@ -21,9 +21,9 @@ export default function App() {
         initialRouteName='Home' screenOptions={{
           headerTitleAlign: 'center',
           headerStyle: {
-            backgroundColor: '#ff00ff',
+            backgroundColor: '#98fb98',
           },
-          headerTintColor: '#f0ffff'
+          headerTintColor: '#f0ffff',
         }}>
         <Drawer.Screen
           name='Home'
@@ -32,11 +32,6 @@ export default function App() {
             title: 'Dịch Vụ Đặt Tiệc', drawerIcon: ({ focused, color, size }) => (
               <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
             ),
-            headerRight: () => (
-              <Ionicons name="search" size={24} color={"white"} style={{ marginRight: 10 }} onPress={() => {
-                // Xử lý sự kiện khi click vào biểu tượng tìm kiếm
-              }}  />
-            )
           }} />
         <Drawer.Screen
           name='BookingHistory'

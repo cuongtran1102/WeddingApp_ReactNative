@@ -1,20 +1,20 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
+const screenHeight = Dimensions.get('window').height;
 
 export default StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingVertical: 30,
+        paddingVertical: screenHeight * 0.06,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
       },
       avatar: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        marginRight: 15,
+        width: 70,
+        height: 70,
+        borderRadius: 35,
+        marginHorizontal: 10
       },
       userInfo: {
         flexDirection: 'column',
@@ -22,10 +22,11 @@ export default StyleSheet.create({
       userName: {
         fontSize: 16,
         fontWeight: 'bold',
-        marginBottom: 5,
+        marginRight: 10
       },
       userEmail: {
         fontSize: 14,
         color: '#666',
+        marginRight: 10
       },
 });
