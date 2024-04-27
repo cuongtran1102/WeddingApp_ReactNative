@@ -74,6 +74,7 @@ export default BookingDetail = () => {
                     <Text style={BookingDetailStyles.textTitle}>Flower Garden</Text>
                     <Text style={BookingDetailStyles.textDiscription}>Vườn hoa với hoa đào chủ đạo
                         mang lại cảm giác ấm áp hài hòa phù hợp với những tâm hồn hòa quyện thiên nhiên</Text>
+                    <Text style={BookingDetailStyles.textPrice}>5.500.000 VND</Text>
                 </View>
             </ImageBackground>
             <View style={BookingDetailStyles.line} />
@@ -85,18 +86,19 @@ export default BookingDetail = () => {
                     </TouchableOpacity>
                     {/* Dropdown Item */}
                     <Dropdown
+                        itemTextStyle={BookingDetailStyles.selectedTextStyle}
                         style={BookingDetailStyles.dropdown}
                         placeholderStyle={BookingDetailStyles.placeholderStyle}
                         selectedTextStyle={BookingDetailStyles.selectedTextStyle}
                         inputSearchStyle={BookingDetailStyles.inputSearchStyle}
                         iconStyle={BookingDetailStyles.iconStyle}
                         data={data}
-                        search
+                        // search
                         maxHeight={300}
                         labelField="label"
                         valueField="value"
                         placeholder={<Text style={{ fontSize: 12, fontWeight: 'bold', color: '#000080' }}>Chọn Buổi</Text>}
-                        searchPlaceholder="Tìm..."
+                        // searchPlaceholder="Tìm..."
                         value={value}
                         onChange={item => {
                             setValue(item.value);
@@ -112,6 +114,7 @@ export default BookingDetail = () => {
                 {/* Dropdown Menu Item */}
                 <View>
                     <MultiSelect
+                        activeColor="#ffe4b5"
                         style={MenuStyles.dropdown}
                         placeholderStyle={MenuStyles.placeholderStyle}
                         selectedTextStyle={MenuStyles.selectedTextStyle}
@@ -148,8 +151,8 @@ export default BookingDetail = () => {
                         )}
                     />
                 </View>
-                <View style={{alignItems: 'center', marginTop: 10, flexDirection: 'row', justifyContent:'center'}}>
-                    <Text style={{marginRight: 10, fontSize: 12, fontWeight: 'bold', color: '#000080'}}>Số Lượng:</Text>
+                <View style={{ alignItems: 'center', marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
+                    <Text style={{ marginRight: 10, fontSize: 12, fontWeight: 'bold', color: '#000080' }}>Số Lượng:</Text>
                     <Counter
                         buttonStyle={{
                             borderColor: '#333',
@@ -177,6 +180,7 @@ export default BookingDetail = () => {
                 {/* Dropdown Service Item */}
                 <View>
                     <MultiSelect
+                        activeColor="#ffe4b5"
                         style={MenuStyles.dropdown}
                         placeholderStyle={MenuStyles.placeholderStyle}
                         selectedTextStyle={MenuStyles.selectedTextStyle}
@@ -215,9 +219,15 @@ export default BookingDetail = () => {
                 </View>
                 <View style={BookingDetailStyles.line} />
                 <TouchableOpacity style={BookingDetailStyles.btnBookingParty}>
-                    <Text style={{fontSize: 15, fontWeight: 'bold', color: '#000080'}}>Đặt Tiệc</Text>
+                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: '#000080' }}>Đặt Tiệc</Text>
                 </TouchableOpacity>
                 <View style={BookingDetailStyles.line} />
+                <Text style={BookingDetailStyles.txtConfirm}>Đánh Giá</Text>
+
+                {/* Comments View */}
+                <View>
+
+                </View>
             </View>
         </ScrollView>
     );
