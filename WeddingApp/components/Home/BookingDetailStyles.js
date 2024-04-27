@@ -40,6 +40,11 @@ export default StyleSheet.create({
         color: '#ffe4b5',
         marginLeft: 15
     },
+    textPrice:{
+      fontSize: 15,
+      color: '#ff0000',
+      marginLeft: 15,
+    },
     viewBooking:{
         flexDirection: 'row',
         marginHorizontal: 10,
@@ -79,7 +84,9 @@ export default StyleSheet.create({
         fontSize: 16,
       },
       selectedTextStyle: {
-        fontSize: 16,
+        fontSize: 12,
+        color: '#000080',
+        fontWeight: 'bold'
       },
       iconStyle: {
         width: 20,
@@ -98,5 +105,12 @@ export default StyleSheet.create({
         backgroundColor: 'rgba(255, 0, 0, 0.7)',
         borderRadius: 8,
         padding: 12
+      },
+      txtConfirm:{
+        marginTop: 10,
+        marginLeft: 10,
+        fontSize: 12,
+        color: '#000080',
+        fontWeight: 'bold'
       }
 });

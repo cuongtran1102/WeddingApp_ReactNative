@@ -1,10 +1,11 @@
-import { View, Text } from "react-native";
+import { View, Text, TextInput } from "react-native";
 import MyStyles from "../../styles/MyStyles";
+import ResetPasswordStyles from "./ResetPasswordStyles";
 
 export default ResetPassword = () => {
     return(
         <View style={MyStyles.container}>
-            <Text>ResetPassword</Text>
+           <TextInput style={ResetPasswordStyles.textInput} placeholder="Nhập mật khẩu hiện tại"/>
         </View>
     );
 }
