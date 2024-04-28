@@ -1,28 +1,43 @@
-import { Alert, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import LoginStyles from "./LoginStyles";
-import { useState } from "react";
-import API, { Endpoints } from "../../configs/API";
+import { useContext, useState } from "react";
+import API, { AuthAPI, Endpoints } from "../../configs/API";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import UserContext from "../../contexts/UserContext";
+import Home from "../Home/Home";
+import { CLIENT_ID, CLIENT_SECRET } from "../../configs/Enum";
 
-export default Login = () =>{
+export default Login = ({navigation}) =>{
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [currentUser, dispatch] = useContext(UserContext)
+    const [loading, setLoading] = useState(false)
 
     const login = async () => {
         try{
+            setLoading(true)
             let {data} = await API.post(Endpoints['user']['login'],
                 {
-                    "client_id": "mlxGinrkhw2faB4TqRss7duykFqrMfiTTnn2EiCQ",
-                    "client_secret": "MhB17AQbUeqd4kLH1WDZ2kFleBR7owqt636pKR5vpfnmEQi9TBn1WxZDwlsCsd7dUuoq8BVAxCBqIhgy7DCxv30QpeIPGlnc9JBMPGzRs5eryo8IkDX1t7D5e5YBXtZG",
+                    "client_id": CLIENT_ID,
+                    "client_secret": CLIENT_SECRET,
                     "grant_type": "password",
                     "password": password,
                     "username": username
                 })
             await AsyncStorage.setItem('token', data.access_token)
+
+            let res = await AuthAPI(data.access_token).get(Endpoints['user']['current'])
+            dispatch({
+                'type': 'login',
+                'payload': res.data
+            })
+            navigation.navigate('Home')
         }
         catch(ex){
             Alert.alert('Sai tai khoan hoac mat khau')
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -51,7 +66,8 @@ export default Login = () =>{
                     />
                 </View>
                 <TouchableOpacity onPress={login} style={LoginStyles.loginBtn}>
-                    <Text style={LoginStyles.textBtn}>Đăng Nhập</Text>
+                    { loading ? <ActivityIndicator /> :
+                    <Text style={LoginStyles.textBtn}>Đăng Nhập</Text> }
                 </TouchableOpacity>
                 <TouchableOpacity style={{marginTop: 20}}>
                     <Text style={LoginStyles.textRegister}>Tạo tài khoản mới</Text>
