@@ -46,5 +46,11 @@ export default StyleSheet.create({
         flex: 1,
         fontSize: 15,
         color: '#4b0082'
-    }
+    },
+    line:{
+        marginTop: 10,
+        borderBottomColor: '#2f4f4f',
+        borderBottomWidth: 1,
+        marginHorizontal: 10
+    },
 });
