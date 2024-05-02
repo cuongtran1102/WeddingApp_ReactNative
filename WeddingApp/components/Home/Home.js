@@ -1,3 +1,4 @@
+// <<<<<<< quoc
 import { ActivityIndicator, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
 import MyStyles from "../../styles/MyStyles";
 import { Avatar, Card, Text, Button } from "react-native-paper";
@@ -25,9 +26,27 @@ export default Home = () => {
 
     if (halls === null) return <ActivityIndicator />
 
+// =======
+// import { RefreshControl, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
+// import MyStyles from "../../styles/MyStyles";
+// import { Avatar, Card, Text, Button } from "react-native-paper";
+// import { Ionicons } from "@expo/vector-icons";
+// import { useCallback, useState } from "react";
+
+// export default Home = () => {
+//     const [refreshing, setRefreshing] = useState(false);
+//     const onRefresh = useCallback(() => {
+//         setRefreshing(true);
+//         setTimeout(() => {
+//             setRefreshing(false)
+//         }, 2000);
+//     }, []);
+// >>>>>>> main
 
     return (
-        <ScrollView>
+        <ScrollView refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+        }>
             <View>
                 <View style={MyStyles.viewInput}>
                     <Ionicons name="search-outline" size={24} color='#1e90ff' style={{ marginRight: 10 }} />

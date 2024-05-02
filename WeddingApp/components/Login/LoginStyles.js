@@ -36,14 +36,14 @@ export default StyleSheet.create({
         },
         loginBtn:{
             marginTop: 40,
-            padding: 10,
+            padding: 12,
             backgroundColor: '#0000ff',
             borderRadius: 8,
         },
         textBtn:{
             color: '#ffffff',
             textAlign: 'center',
-            fontSize: 20,
+            fontSize: 15,
             fontWeight: 'bold'
         },
         textRegister:{
