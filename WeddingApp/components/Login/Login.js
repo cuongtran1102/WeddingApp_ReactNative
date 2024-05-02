@@ -7,9 +7,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserContext from "../../contexts/UserContext";
 import Home from "../Home/Home";
 import { CLIENT_ID, CLIENT_SECRET } from "../../configs/Enum";
+import Register from "../Register/Register";
 
-export default Login = ({navigation}) =>{
-    const [username, setUsername] = useState('');
+export default Login = ({navigation, route}) =>{
+    const [username, setUsername] = useState(route.params?.username ?? '');
     const [password, setPassword] = useState('');
     const [currentUser, dispatch] = useContext(UserContext)
     const [loading, setLoading] = useState(false)
@@ -54,6 +55,7 @@ export default Login = ({navigation}) =>{
                     onChangeText={evt => setUsername(evt)}
                         placeholder="UserName"
                         style={LoginStyles.textInput}
+                        value={username}
                     />
                 </View>
                 <View style={LoginStyles.viewInput}>
@@ -69,7 +71,7 @@ export default Login = ({navigation}) =>{
                     { loading ? <ActivityIndicator /> :
                     <Text style={LoginStyles.textBtn}>Đăng Nhập</Text> }
                 </TouchableOpacity>
-                <TouchableOpacity style={{marginTop: 20}}>
+                <TouchableOpacity style={{marginTop: 20}} onPress={() => navigation.navigate('Register')}>
                     <Text style={LoginStyles.textRegister}>Tạo tài khoản mới</Text>
                 </TouchableOpacity>
             </View>

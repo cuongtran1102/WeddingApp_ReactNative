@@ -11,6 +11,7 @@ import Logout from './components/Logout/Logout';
 import MyUserReducer from './reducers/MyUserReducers';
 import UserContext from './contexts/UserContext';
 import Login from './components/Login/Login';
+import Register from './components/Register/Register';
 const Drawer = createDrawerNavigator();
 
 
@@ -31,16 +32,16 @@ export default function App() {
             },
             headerTintColor: '#f0ffff',
           }}>
-            <Drawer.Screen
-              name='Home'
-              component={Home}
-              options={{
-                title: 'Dịch Vụ Đặt Tiệc', drawerIcon: ({ focused, color, size }) => (
-                  <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
-                ),
-              }} />
-          
-          
+          <Drawer.Screen
+            name='Home'
+            component={Home}
+            options={{
+              title: 'Dịch Vụ Đặt Tiệc', drawerIcon: ({ focused, color, size }) => (
+                <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
+              ),
+            }} />
+
+
           <Drawer.Screen
             name='BookingHistory'
             component={BookingHistory}
@@ -50,44 +51,55 @@ export default function App() {
               )
             }} />
 
-            { currentUser !== null ? 
-            
-              <>
-                <Drawer.Screen
-            name='EditProfile'
-            component={EditProfile}
-            options={{
-              title: 'Chỉnh sửa thông tin', drawerIcon: ({ focused, color, size }) => (
-                <Ionicons name={focused ? 'settings' : 'settings-outline'} size={size} color={color} />
-              )
-            }} />
-          <Drawer.Screen
-            name='ResetPassword'
-            component={ResetPassword}
-            options={{
-              title: 'Đổi mật khẩu', drawerIcon: ({ focused, color, size }) => (
-                <Ionicons name={focused ? 'lock-closed' : 'lock-closed-outline'} size={size} color={color} />
-              )
-            }} />
-          <Drawer.Screen
-            name='Logout'
-            component={Logout}
-            options={{
-              title: 'Đăng xuất', drawerIcon: ({ focused, color, size }) => (
-                <Ionicons name={focused ? 'log-out' : 'log-out-outline'} size={size} color={color} />
-              )
-            }} />
-              </> : <Drawer.Screen
-            name='Login'
-            component={Login}
-            options={{
-              title: 'Đăng Nhập', drawerIcon: ({ focused, color, size }) => (
-                <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
-              ),
-            }} />
-              
+          {currentUser !== null ?
+
+            <>
+              <Drawer.Screen
+                name='EditProfile'
+                component={EditProfile}
+                options={{
+                  title: 'Chỉnh sửa thông tin', drawerIcon: ({ focused, color, size }) => (
+                    <Ionicons name={focused ? 'settings' : 'settings-outline'} size={size} color={color} />
+                  )
+                }} />
+              <Drawer.Screen
+                name='ResetPassword'
+                component={ResetPassword}
+                options={{
+                  title: 'Đổi mật khẩu', drawerIcon: ({ focused, color, size }) => (
+                    <Ionicons name={focused ? 'lock-closed' : 'lock-closed-outline'} size={size} color={color} />
+                  )
+                }} />
+              <Drawer.Screen
+                name='Logout'
+                component={Logout}
+                options={{
+                  title: 'Đăng xuất', drawerIcon: ({ focused, color, size }) => (
+                    <Ionicons name={focused ? 'log-out' : 'log-out-outline'} size={size} color={color} />
+                  )
+                }} />
+            </> :
+            <>
+              <Drawer.Screen
+                name='Login'
+                component={Login}
+                options={{
+                  title: 'Đăng Nhập', drawerIcon: ({ focused, color, size }) => (
+                    <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
+                  ),
+                }} />
+              <Drawer.Screen
+                name='Register'
+                component={Register}
+                options={{
+                  title: 'Đăng Ký', drawerIcon: ({ focused, color, size }) => (
+                    <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
+                  ),
+                }} />
+            </>
+
           }
-          
+
         </Drawer.Navigator>
       </NavigationContainer>
     </UserContext.Provider>
