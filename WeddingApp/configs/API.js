@@ -4,7 +4,12 @@ const SERVER = 'https://anhquoc0304.pythonanywhere.com'
 export const Endpoints = {
     'user': {
         'login': '/o/token/',
-        'current': '/users/current-user/'
+        'current': '/users/current-user/',
+        'register': '/users/',
+        'edit': '/users/edit'
+    },
+    'wedding-hall': {
+        'list': '/wedding-hall/'
     }
 }
 

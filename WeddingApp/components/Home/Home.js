@@ -1,17 +1,47 @@
-import { RefreshControl, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
+// <<<<<<< quoc
+import { ActivityIndicator, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
 import MyStyles from "../../styles/MyStyles";
 import { Avatar, Card, Text, Button } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
+import API, { Endpoints } from "../../configs/API";
+
+const leftContent = props => <Avatar.Icon {...props} icon={'camera'} />
 
 export default Home = () => {
-    const [refreshing, setRefreshing] = useState(false);
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        setTimeout(() => {
-            setRefreshing(false)
-        }, 2000);
-    }, []);
+    const [halls, setHalls] = useState(null)
+
+
+
+    // useEffect
+    useEffect(() => {
+        const loadWeddingHall = async() => {
+            let {data} = await API.get(Endpoints['wedding-hall']['list'])
+            setHalls(data)
+        }
+
+        loadWeddingHall()
+    }, [])
+
+
+    if (halls === null) return <ActivityIndicator />
+
+// =======
+// import { RefreshControl, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
+// import MyStyles from "../../styles/MyStyles";
+// import { Avatar, Card, Text, Button } from "react-native-paper";
+// import { Ionicons } from "@expo/vector-icons";
+// import { useCallback, useState } from "react";
+
+// export default Home = () => {
+//     const [refreshing, setRefreshing] = useState(false);
+//     const onRefresh = useCallback(() => {
+//         setRefreshing(true);
+//         setTimeout(() => {
+//             setRefreshing(false)
+//         }, 2000);
+//     }, []);
+// >>>>>>> main
 
     return (
         <ScrollView refreshControl={
@@ -30,10 +60,13 @@ export default Home = () => {
                         marginHorizontal: 10
                     }}
                 />
-                <Card style={MyStyles.cardStyle}>
+                {halls.map(item => (
+
+                
+                <Card style={MyStyles.cardStyle} key={item.id}>
                     <Card.Cover style={MyStyles.cardImage} source={{ uri: 'https://callabridal.com.vn/wp-content/uploads/2023/05/hoa.jpeg' }} />
                     <Card.Content style={MyStyles.cardContent}>
-                        <Text variant="titleLarge" style={MyStyles.cardTitle}>Diamond Garden</Text>
+                        <Text variant="titleLarge" style={MyStyles.cardTitle}>{item.name}</Text>
                         <Text variant="bodyMedium" style={MyStyles.cardDiscription}>Một trong những sảnh
                             tiệc sang trong bậc nhất với sức chứa lên đến 50 bàn</Text>
                     </Card.Content>
@@ -43,7 +76,8 @@ export default Home = () => {
                         </TouchableOpacity>
                     </Card.Actions>
                 </Card>
-                <Card style={MyStyles.cardStyle}>
+                ))}
+                {/* <Card style={MyStyles.cardStyle}>
                     <Card.Cover style={MyStyles.cardImage} source={{ uri: 'https://callabridal.com.vn/wp-content/uploads/2023/05/cx2.jpeg' }} />
                     <Card.Content style={MyStyles.cardContent}>
                         <Text variant="titleLarge" style={MyStyles.cardTitle}>Flower Garden</Text>
@@ -68,7 +102,7 @@ export default Home = () => {
                             <Button style={MyStyles.btnBookingStyle}>Đặt Sảnh</Button>
                         </TouchableOpacity>
                     </Card.Actions>
-                </Card>
+                </Card> */}
             </View>
         </ScrollView>
     );
