@@ -1,4 +1,4 @@
-import { Alert, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View, Image } from "react-native";
+import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import RegisterStyles from "./RegisterStyles";
 import { useState } from "react";
@@ -7,7 +7,7 @@ import API, { Endpoints } from "../../configs/API";
 import { ActivityIndicator } from "react-native-paper";
 import axios from "axios";
 
-export default Register = ({navigation}) => {
+export default Register = ({ navigation }) => {
     // useState
     const [user, SetUser] = useState({
         'first_name': '',
@@ -24,7 +24,7 @@ export default Register = ({navigation}) => {
     // function
     const changeValue = (field, value) => {
         SetUser(current => {
-            return{...current, [field]: value}
+            return { ...current, [field]: value }
         })
     }
 
@@ -49,7 +49,7 @@ export default Register = ({navigation}) => {
             return
         }
         let formData = new FormData()
-        for(let item in user) {
+        for (let item in user) {
             formData.append(item, user[item])
         }
 
@@ -57,39 +57,37 @@ export default Register = ({navigation}) => {
         // .then(res => console.log(res.data))
         // .catch(error => console.log(error))
 
-       try {
-        setLoading(true)
-        let res = await API.post(Endpoints['user']['register'], formData)
-        // Alert.alert('Đăng Ký Thành Công')
-        //     navigation.navigate('Login', {
-        //         'username': user['username']
-        //     })
-        if (res.status === 400) {
-            console.log(res.data)
-        } else {
-            Alert.alert('Đăng Ký Thành Công')
-            navigation.navigate('Login', {
-                'username': user['username']
-            })
+        try {
+            setLoading(true)
+            let res = await API.post(Endpoints['user']['register'], formData)
+            // Alert.alert('Đăng Ký Thành Công')
+            //     navigation.navigate('Login', {
+            //         'username': user['username']
+            //     })
+            if (res.status === 400) {
+                console.log(res.data)
+            } else {
+                Alert.alert('Đăng Ký Thành Công')
+                navigation.navigate('Login', {
+                    'username': user['username']
+                })
+            }
+        } catch (ex) {
+            Alert.alert('Có lỗi xảy ra. Vui Lòng thử lại')
+            console.info(ex)
+        } finally {
+            setLoading(false)
         }
-       } catch(ex) {
-        Alert.alert('Có lỗi xảy ra. Vui Lòng thử lại')
-        console.info(ex)
-       } finally {
-        setLoading(false)
-       }
     }
 
-
-
     return (
-        <SafeAreaView>
+        <ScrollView>
             <View style={RegisterStyles.container}>
                 <View style={RegisterStyles.item}>
                     <Text style={RegisterStyles.textLogin}>Đăng Ký</Text>
                     <Text style={RegisterStyles.textTitle}>Register to Booking your party</Text>
                 </View>
-                <ScrollView>
+                <View>
                     <View style={RegisterStyles.viewInput}>
                         <Ionicons name="person-circle-outline" size={24} color='#1e90ff' style={{ marginRight: 10 }} />
                         <TextInput
@@ -118,6 +116,8 @@ export default Register = ({navigation}) => {
                         <Ionicons name="person-outline" size={24} color='#1e90ff' style={{ marginRight: 10 }} />
                         <TextInput
                             placeholder="Tên Đăng Nhập"
+                            keyboardType="visible-password"
+                            maxLength={16}
                             style={RegisterStyles.textInput}
                             onChangeText={evt => changeValue('username', evt)}
                         />
@@ -126,6 +126,8 @@ export default Register = ({navigation}) => {
                         <Ionicons name="lock-closed-outline" size={24} color='#1e90ff' style={{ marginRight: 10 }} />
                         <TextInput
                             placeholder="Mật Khẩu"
+                            maxLength={16}
+                            secureTextEntry={true}
                             style={RegisterStyles.textInput}
                             onChangeText={evt => changeValue('password', evt)}
                         />
@@ -134,26 +136,26 @@ export default Register = ({navigation}) => {
                         <Ionicons name="lock-closed-outline" size={24} color='#1e90ff' style={{ marginRight: 10 }} />
                         <TextInput
                             placeholder="Nhập Lại Mật Khẩu"
+                            maxLength={16}
+                            secureTextEntry={true}
                             style={RegisterStyles.textInput}
                             onChangeText={evt => setConfirmPassword(evt)}
                         />
                     </View>
-                    <View style={RegisterStyles.viewInput}>
-                        <TouchableOpacity onPress={pickImage}>
-                            <Ionicons name="image-outline" size={24} color='#1e90ff' style={{ marginRight: 10 }} />
-                            <TextInput
-                                placeholder="Ảnh Đại Diện"
-                                style={RegisterStyles.textInput}
-                            />
-                        </TouchableOpacity>
-                        
-                    </View>
-                </ScrollView>
+                    <TouchableOpacity style={RegisterStyles.viewInput} onPress={pickImage}>
+                        <Ionicons name="image-outline" size={24} color='#1e90ff' style={{ marginRight: 10 }} />
+                        <TextInput
+                            editable={false}
+                            placeholder="Ảnh Đại Diện"
+                            style={RegisterStyles.textInput}
+                        />
+                    </TouchableOpacity>
+                </View>
                 <TouchableOpacity style={RegisterStyles.loginBtn} onPress={register}>
                     {loading && <ActivityIndicator />}
                     <Text style={RegisterStyles.textBtn}>Đăng Ký</Text>
                 </TouchableOpacity>
             </View>
-        </SafeAreaView>
+        </ScrollView>
     );
 }

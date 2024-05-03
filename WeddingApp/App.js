@@ -32,28 +32,25 @@ export default function App() {
             },
             headerTintColor: '#f0ffff',
           }}>
-          <Drawer.Screen
-            name='Home'
-            component={Home}
-            options={{
-              title: 'Dịch Vụ Đặt Tiệc', drawerIcon: ({ focused, color, size }) => (
-                <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
-              ),
-            }} />
-
-
-          <Drawer.Screen
-            name='BookingHistory'
-            component={BookingHistory}
-            options={{
-              title: 'Lịch Sử Đặt Tiệc', drawerIcon: ({ focused, color, size }) => (
-                <Ionicons name={focused ? 'time' : 'time-outline'} size={size} color={color} />
-              )
-            }} />
 
           {currentUser !== null ?
-
             <>
+              <Drawer.Screen
+                name='Home'
+                component={Home}
+                options={{
+                  title: 'Dịch Vụ Đặt Tiệc', drawerIcon: ({ focused, color, size }) => (
+                    <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
+                  ),
+                }} />
+              <Drawer.Screen
+                name='BookingHistory'
+                component={BookingHistory}
+                options={{
+                  title: 'Lịch Sử Đặt Tiệc', drawerIcon: ({ focused, color, size }) => (
+                    <Ionicons name={focused ? 'time' : 'time-outline'} size={size} color={color} />
+                  )
+                }} />
               <Drawer.Screen
                 name='EditProfile'
                 component={EditProfile}
@@ -85,7 +82,7 @@ export default function App() {
                 component={Login}
                 options={{
                   title: 'Đăng Nhập', drawerIcon: ({ focused, color, size }) => (
-                    <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
+                    <Ionicons name={focused ? 'log-in' : 'log-in-outline'} size={size} color={color} />
                   ),
                 }} />
               <Drawer.Screen
@@ -93,7 +90,7 @@ export default function App() {
                 component={Register}
                 options={{
                   title: 'Đăng Ký', drawerIcon: ({ focused, color, size }) => (
-                    <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
+                    <Ionicons name={focused ? 'person-add' : 'person-add-outline'} size={size} color={color} />
                   ),
                 }} />
             </>

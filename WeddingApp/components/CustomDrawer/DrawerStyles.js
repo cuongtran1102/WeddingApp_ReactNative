@@ -20,13 +20,15 @@ export default StyleSheet.create({
         flexDirection: 'column',
       },
       userName: {
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: 'bold',
-        marginRight: 10
+        marginRight: 10,
+        color: '#4b0082'
       },
       userEmail: {
-        fontSize: 14,
-        color: '#666',
+        fontSize: 12,
+        color: '#4b0082',
+        fontStyle: 'italic',
         marginRight: 10
       },
 });

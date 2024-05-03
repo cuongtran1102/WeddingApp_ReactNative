@@ -13,7 +13,7 @@ export default StyleSheet.create({
             fontSize: 25,
             fontWeight: 'bold',
             color: '#8a2be2',
-            marginTop: screenHeight * 0.1
+            marginTop: screenHeight * 0.01
         },
         textTitle:{
             fontSize: 22,
