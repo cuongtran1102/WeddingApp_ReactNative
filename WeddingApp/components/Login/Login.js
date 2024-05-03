@@ -1,11 +1,10 @@
-import { ActivityIndicator, Alert, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import LoginStyles from "./LoginStyles";
 import { useContext, useState } from "react";
 import API, { AuthAPI, Endpoints } from "../../configs/API";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserContext from "../../contexts/UserContext";
-import Home from "../Home/Home";
 import { CLIENT_ID, CLIENT_SECRET } from "../../configs/Enum";
 export default Login = ({navigation}) =>{
     const [username, setUsername] = useState('anhquoc0304');
@@ -41,7 +40,7 @@ export default Login = ({navigation}) =>{
     }
 
     return(
-        <SafeAreaView>
+        <ScrollView>
             <View style={LoginStyles.container}>
                 <View style={LoginStyles.item}>
                     <Text style={LoginStyles.textLogin}>Đăng Nhập</Text>
@@ -52,6 +51,8 @@ export default Login = ({navigation}) =>{
                     <TextInput
                     onChangeText={evt => setUsername(evt)}
                         placeholder="UserName"
+                        keyboardType="visible-password"
+                        maxLength={16}
                         style={LoginStyles.textInput}
                         value={username}
                     />
@@ -61,6 +62,7 @@ export default Login = ({navigation}) =>{
                     <TextInput
                     onChangeText={evt => setPassword(evt)}
                         placeholder="Password"
+                        maxLength={16}
                         secureTextEntry={true}
                         style={LoginStyles.textInput}
                         value={password}
@@ -74,6 +76,6 @@ export default Login = ({navigation}) =>{
                     <Text style={LoginStyles.textRegister}>Tạo tài khoản mới</Text>
                 </TouchableOpacity>
             </View>
-        </SafeAreaView>
+        </ScrollView>
     );
 }
