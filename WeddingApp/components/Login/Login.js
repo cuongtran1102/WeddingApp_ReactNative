@@ -7,12 +7,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserContext from "../../contexts/UserContext";
 import Home from "../Home/Home";
 import { CLIENT_ID, CLIENT_SECRET } from "../../configs/Enum";
-import Register from "../Register/Register";
-
-export default Login = ({navigation, route}) =>{
-    const [username, setUsername] = useState(route.params?.username ?? '');
-    const [password, setPassword] = useState('');
-    const [currentUser, dispatch] = useContext(UserContext)
+export default Login = ({navigation}) =>{
+    const [username, setUsername] = useState('anhquoc0304');
+    const [password, setPassword] = useState('123456');
+    const [, dispatch] = useContext(UserContext)
     const [loading, setLoading] = useState(false)
 
     const login = async () => {
@@ -65,6 +63,7 @@ export default Login = ({navigation, route}) =>{
                         placeholder="Password"
                         secureTextEntry={true}
                         style={LoginStyles.textInput}
+                        value={password}
                     />
                 </View>
                 <TouchableOpacity onPress={login} style={LoginStyles.loginBtn}>

@@ -5,12 +5,12 @@ import { useContext } from "react";
 import UserContext from "../../contexts/UserContext";
 
 export default CustomDrawer = props => {
-    const [currentUser, dispatch] = useContext(UserContext)
+    const [currentUser, ] = useContext(UserContext)
 
     return (
         <DrawerContentScrollView {...props}>
             {currentUser !== null && <View style={DrawerStyles.container}>
-                <Image source={{ uri: "https://thanhduong.pythonanywhere.com/static/courses/2022/04/Lighthouse.jpg" }} style={DrawerStyles.avatar} />
+                <Image source={{ uri: currentUser.avatar }} style={DrawerStyles.avatar} />
                 <View style={DrawerStyles.userInfo}>
                     <Text style={DrawerStyles.userName}>{currentUser.first_name} {currentUser.last_name}</Text>
                     <Text style={DrawerStyles.userEmail}>{currentUser.email}</Text>
