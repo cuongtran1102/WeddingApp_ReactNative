@@ -1,13 +1,11 @@
-import { ActivityIndicator, Alert, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import LoginStyles from "./LoginStyles";
 import { useContext, useState } from "react";
 import API, { AuthAPI, Endpoints } from "../../configs/API";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserContext from "../../contexts/UserContext";
-import Home from "../Home/Home";
 import { CLIENT_ID, CLIENT_SECRET } from "../../configs/Enum";
-import Register from "../Register/Register";
 
 export default Login = ({navigation, route}) =>{
     const [username, setUsername] = useState(route.params?.username ?? '');
@@ -43,7 +41,7 @@ export default Login = ({navigation, route}) =>{
     }
 
     return(
-        <SafeAreaView>
+        <ScrollView>
             <View style={LoginStyles.container}>
                 <View style={LoginStyles.item}>
                     <Text style={LoginStyles.textLogin}>Đăng Nhập</Text>
@@ -54,6 +52,8 @@ export default Login = ({navigation, route}) =>{
                     <TextInput
                     onChangeText={evt => setUsername(evt)}
                         placeholder="UserName"
+                        keyboardType="visible-password"
+                        maxLength={16}
                         style={LoginStyles.textInput}
                         value={username}
                     />
@@ -63,6 +63,7 @@ export default Login = ({navigation, route}) =>{
                     <TextInput
                     onChangeText={evt => setPassword(evt)}
                         placeholder="Password"
+                        maxLength={16}
                         secureTextEntry={true}
                         style={LoginStyles.textInput}
                     />
@@ -75,6 +76,6 @@ export default Login = ({navigation, route}) =>{
                     <Text style={LoginStyles.textRegister}>Tạo tài khoản mới</Text>
                 </TouchableOpacity>
             </View>
-        </SafeAreaView>
+        </ScrollView>
     );
 }
