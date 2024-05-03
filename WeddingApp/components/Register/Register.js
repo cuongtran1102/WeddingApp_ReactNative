@@ -5,7 +5,8 @@ import { useState } from "react";
 import * as ImagePicker from 'expo-image-picker'
 import API, { Endpoints } from "../../configs/API";
 import { ActivityIndicator } from "react-native-paper";
-import axios from "axios";
+import mime from "mime";
+import { processImagePicker } from "../../configs/Utils";
 
 export default Register = ({ navigation }) => {
     // useState
@@ -38,7 +39,8 @@ export default Register = ({ navigation }) => {
             const result = await ImagePicker.launchImageLibraryAsync()
             if (!result.canceled) {
                 setAvatar(result.assets[0])
-                // changeValue('avatar', result.assets[0])
+            } else {
+                setAvatar(null)
             }
         }
     }
@@ -47,37 +49,32 @@ export default Register = ({ navigation }) => {
         if (confirmPassword !== user['password']) {
             Alert.alert('Mật khẩu và xác nhận mật khẩu không hợp lệ')
             return
+        } else if (avatar === null) {
+            Alert.alert('Chọn ảnh đại diện')
+            return;
         }
         let formData = new FormData()
         for (let item in user) {
             formData.append(item, user[item])
         }
+        let formAvatar = processImagePicker(avatar)
+        formData.append('avatar', formAvatar)
 
-        // axios.post('https://anhquoc0304.pythonanywhere.com/users/', formData)
-        // .then(res => console.log(res.data))
-        // .catch(error => console.log(error))
-
-        try {
-            setLoading(true)
-            let res = await API.post(Endpoints['user']['register'], formData)
-            // Alert.alert('Đăng Ký Thành Công')
-            //     navigation.navigate('Login', {
-            //         'username': user['username']
-            //     })
-            if (res.status === 400) {
-                console.log(res.data)
-            } else {
-                Alert.alert('Đăng Ký Thành Công')
-                navigation.navigate('Login', {
-                    'username': user['username']
-                })
+       try {
+        setLoading(true)
+        let res = await API.post(Endpoints['user']['register'], formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
             }
-        } catch (ex) {
-            Alert.alert('Có lỗi xảy ra. Vui Lòng thử lại')
-            console.info(ex)
-        } finally {
-            setLoading(false)
-        }
+        })
+        Alert.alert('Đăng Ký thành công.')
+        navigation.navigate('Login')
+       } catch(ex) {
+        Alert.alert('Có lỗi xảy ra. Vui Lòng thử lại')
+        console.info(ex.response.data)
+       } finally {
+        setLoading(false)
+       }
     }
 
     return (
@@ -130,6 +127,7 @@ export default Register = ({ navigation }) => {
                             secureTextEntry={true}
                             style={RegisterStyles.textInput}
                             onChangeText={evt => changeValue('password', evt)}
+                            secureTextEntry={true}
                         />
                     </View>
                     <View style={RegisterStyles.viewInput}>
@@ -140,6 +138,7 @@ export default Register = ({ navigation }) => {
                             secureTextEntry={true}
                             style={RegisterStyles.textInput}
                             onChangeText={evt => setConfirmPassword(evt)}
+                            secureTextEntry={true}
                         />
                     </View>
                     <TouchableOpacity style={RegisterStyles.viewInput} onPress={pickImage}>

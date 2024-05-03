@@ -6,11 +6,10 @@ import API, { AuthAPI, Endpoints } from "../../configs/API";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserContext from "../../contexts/UserContext";
 import { CLIENT_ID, CLIENT_SECRET } from "../../configs/Enum";
-
-export default Login = ({navigation, route}) =>{
-    const [username, setUsername] = useState(route.params?.username ?? '');
-    const [password, setPassword] = useState('');
-    const [currentUser, dispatch] = useContext(UserContext)
+export default Login = ({navigation}) =>{
+    const [username, setUsername] = useState('anhquoc0304');
+    const [password, setPassword] = useState('123456');
+    const [, dispatch] = useContext(UserContext)
     const [loading, setLoading] = useState(false)
 
     const login = async () => {
@@ -66,6 +65,7 @@ export default Login = ({navigation, route}) =>{
                         maxLength={16}
                         secureTextEntry={true}
                         style={LoginStyles.textInput}
+                        value={password}
                     />
                 </View>
                 <TouchableOpacity onPress={login} style={LoginStyles.loginBtn}>
