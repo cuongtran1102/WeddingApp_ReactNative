@@ -1,17 +1,41 @@
-import { Image, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import MyStyles from "../../styles/MyStyles";
 import { Ionicons } from "@expo/vector-icons";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import HistoryStyles from "../Booking History/HistoryStyles";
+import API, { Endpoints } from "../../configs/API";
 
 export default Home = () => {
     const [refreshing, setRefreshing] = useState(false);
+    const [loading, setLoading] = useState(false)
+    const [halls, setHalls] = useState(null)
+
+
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         setTimeout(() => {
             setRefreshing(false)
         }, 2000);
     }, []);
+
+    // use effect
+    useEffect(() => {
+        const loadHalls = async () => {
+            try {
+                setLoading(true)
+                let {data} = await API.get(Endpoints['wedding-hall']['list'])
+                setHalls(data)
+            } catch(ex) {
+                console.log(ex)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        loadHalls()
+    }, [])
+
+    if (halls === null) return <ActivityIndicator />
 
     return (
         <ScrollView refreshControl={
@@ -25,19 +49,22 @@ export default Home = () => {
                 <View style={MyStyles.line} />
 
                 {/* Card Item */}
-                <View style={HistoryStyles.card}>
+                {
+                    halls.map(item => (
+                        <View style={HistoryStyles.card} key={item.id}>
                     <Image
-                        source={{ uri: 'https://callabridal.com.vn/wp-content/uploads/2023/05/hoa.jpeg' }}
+                        source={{ uri: item.img}}
                         style={HistoryStyles.cardImage} />
                     <View style={HistoryStyles.cardContent}>
-                        <Text style={HistoryStyles.cardTitle}>Diamond Garden</Text>
-                        <Text style={HistoryStyles.bookingDate}>Sảnh cưới được bày trí theo phong cách
-                            vườn hoa kim cương mang lại cảm giác nguy nga tráng lệ</Text>
+                        <Text style={HistoryStyles.cardTitle}>{item.name}</Text>
+                        <Text style={HistoryStyles.bookingDate}>{item.description_text}</Text>
                     </View>
                     <TouchableOpacity style={HistoryStyles.buttonBooking}>
                         <Text style={HistoryStyles.bookingText}>Đặt Tiệc</Text>
                     </TouchableOpacity>
                 </View>
+                    ))
+                }
             </View>
         </ScrollView>
     );

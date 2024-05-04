@@ -42,7 +42,6 @@ export default EditProfile = () => {
     if (result.canceled) {
       setAvatar(null)
     } else {
-      // let img = processImagePicker(result.assets[0])
       setAvatar(result.assets[0].uri)
       setLocalAvatar(result.assets[0])
     }
