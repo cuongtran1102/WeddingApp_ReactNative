@@ -40,7 +40,8 @@ export default EditProfile = () => {
 
     let result = await ImgPicker.launchImageLibraryAsync()
     if (result.canceled) {
-      setAvatar(null)
+      setAvatar(currentUser.avatar)
+      setLocalAvatar(null)
     } else {
       setAvatar(result.assets[0].uri)
       setLocalAvatar(result.assets[0])
@@ -70,6 +71,8 @@ export default EditProfile = () => {
     } catch(ex) {
       Alert.alert('Có lỗi xảy ra')
       console.log(ex.response.data)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -83,6 +86,7 @@ export default EditProfile = () => {
       setCurrentUser(res.data)
       console.log(res.data)
       setAvatar(res.data.avatar)
+      // setLocalAvatar
       dispatch({
         'type': 'login',
         'payload': res.data
@@ -142,7 +146,7 @@ export default EditProfile = () => {
         </View>
       </View>
         <TouchableOpacity style={EditProfileStyles.viewBtnSave} onPress={edit}>
-          <Text style={EditProfileStyles.txtSave}>Lưu Thông Tin</Text>
+          {loading ? <ActivityIndicator /> : <Text style={EditProfileStyles.txtSave}>Lưu Thông Tin</Text>}
         </TouchableOpacity>
     </ScrollView>
   );
