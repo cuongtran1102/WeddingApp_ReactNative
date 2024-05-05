@@ -54,7 +54,7 @@ export default StyleSheet.create({
     },
     buttonBooking:{
         marginBottom: 5,
-        marginHorizontal: screenWidth * 0.12,
+        marginHorizontal: screenWidth * 0.25,
         backgroundColor: '#f0f8ff',
         padding: 5,
         borderRadius: 10,
