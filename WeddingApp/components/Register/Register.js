@@ -20,6 +20,7 @@ export default Register = ({ navigation }) => {
     const [confirmPassword, setConfirmPassword] = useState('')
     const [avatar, setAvatar] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [fileName, setFileName] = useState('')
 
 
     // function
@@ -39,6 +40,7 @@ export default Register = ({ navigation }) => {
             const result = await ImagePicker.launchImageLibraryAsync()
             if (!result.canceled) {
                 setAvatar(result.assets[0])
+                setFileName(result.assets[0].fileName)
             } else {
                 setAvatar(null)
             }
@@ -127,7 +129,6 @@ export default Register = ({ navigation }) => {
                             secureTextEntry={true}
                             style={RegisterStyles.textInput}
                             onChangeText={evt => changeValue('password', evt)}
-                            secureTextEntry={true}
                         />
                     </View>
                     <View style={RegisterStyles.viewInput}>
@@ -138,7 +139,6 @@ export default Register = ({ navigation }) => {
                             secureTextEntry={true}
                             style={RegisterStyles.textInput}
                             onChangeText={evt => setConfirmPassword(evt)}
-                            secureTextEntry={true}
                         />
                     </View>
                     <TouchableOpacity style={RegisterStyles.viewInput} onPress={pickImage}>
@@ -147,6 +147,7 @@ export default Register = ({ navigation }) => {
                             editable={false}
                             placeholder="Ảnh Đại Diện"
                             style={RegisterStyles.textInput}
+                            value={fileName}
                         />
                     </TouchableOpacity>
                 </View>

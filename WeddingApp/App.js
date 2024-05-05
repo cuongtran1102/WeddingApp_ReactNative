@@ -2,7 +2,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useReducer } from 'react';
 import Home from './components/Home/Home';
-// import BookingHistory from './components/Booking History/BookingHistory';
+import BookingHistory from './components/Booking History/BookingHistory';
 import { Ionicons } from '@expo/vector-icons';
 import CustomDrawer from './components/CustomDrawer/CustomDrawer';
 import EditProfile from './components/EditProfile/EditProfile';
@@ -43,14 +43,14 @@ export default function App() {
                     <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
                   ),
                 }} />
-              {/* <Drawer.Screen
+              <Drawer.Screen
                 name='BookingHistory'
                 component={BookingHistory}
                 options={{
                   title: 'Lịch Sử Đặt Tiệc', drawerIcon: ({ focused, color, size }) => (
                     <Ionicons name={focused ? 'time' : 'time-outline'} size={size} color={color} />
                   )
-                }} /> */}
+                }} />
               <Drawer.Screen
                 name='EditProfile'
                 component={EditProfile}
