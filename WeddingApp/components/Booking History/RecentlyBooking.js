@@ -1,10 +1,13 @@
-import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { useCallback, useState } from "react";
+import { ActivityIndicator, Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { useCallback, useState, useEffect } from "react";
 import HistoryStyles from "./HistoryStyles";
 import { formattedNumber } from "../../configs/Utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthAPI, Endpoints } from "../../configs/API";
+import { Status } from "../../configs/Enum";
 export default RecentlyBooking = () => {
     const [refreshing, setRefreshing] = useState(false);
-    const [parties, setParites] = useState(null)
+    const [parties, setParties] = useState(null)
 
 
     const onRefresh = useCallback(() => {
@@ -28,6 +31,8 @@ export default RecentlyBooking = () => {
 
         loadHistory()
     }, [])
+
+    if (parties === null) return <ActivityIndicator />
 
     return (
         <ScrollView refreshControl={
