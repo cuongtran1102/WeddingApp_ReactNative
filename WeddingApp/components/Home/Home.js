@@ -24,7 +24,7 @@ export default Home = () => {
             try {
                 setLoading(true)
                 let {data} = await API.get(Endpoints['wedding-hall']['list'])
-                setHalls(data)
+                setHalls(data.results)
             } catch(ex) {
                 console.log(ex)
             } finally {
