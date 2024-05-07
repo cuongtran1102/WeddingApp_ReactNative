@@ -15,7 +15,7 @@ export default Home = () => {
     useEffect(() => {
         fetchData();
     }, []);
-
+  
     const fetchData = async () => {
         try {
             setIsLoading(true);
