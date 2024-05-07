@@ -14,6 +14,14 @@ export const Endpoints = {
     },
     'party': {
         'history': 'wedding-party/history/'
+    },
+    'menu': {
+        'list': '/menus/',
+        'detail': (id) => `/menus/${id}/`
+    },
+    'service': {
+        'list': '/services/',
+        'detail': (id) => `/services/${id}/`
     }
 }
 

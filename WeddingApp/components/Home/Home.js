@@ -5,7 +5,8 @@ import { useCallback, useEffect, useState } from "react";
 import HistoryStyles from "../Booking History/HistoryStyles";
 import API, { Endpoints } from "../../configs/API";
 
-export default Home = () => {
+
+export default Home = ({navigation}) => {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [isloading, setIsLoading] = useState(false);

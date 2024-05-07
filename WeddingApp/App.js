@@ -12,6 +12,9 @@ import MyUserReducer from './reducers/MyUserReducers';
 import UserContext from './contexts/UserContext';
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
+import BookingDetail from './components/Home/BookingDetail';
+
+
 const Drawer = createDrawerNavigator();
 
 
@@ -46,6 +49,14 @@ export default function App() {
               <Drawer.Screen
                 name='BookingHistory'
                 component={BookingHistory}
+                options={{
+                  title: 'Lịch Sử Đặt Tiệc', drawerIcon: ({ focused, color, size }) => (
+                    <Ionicons name={focused ? 'time' : 'time-outline'} size={size} color={color} />
+                  )
+                }} />
+                <Drawer.Screen
+                name='BookingDetail'
+                component={BookingDetail}
                 options={{
                   title: 'Lịch Sử Đặt Tiệc', drawerIcon: ({ focused, color, size }) => (
                     <Ionicons name={focused ? 'time' : 'time-outline'} size={size} color={color} />

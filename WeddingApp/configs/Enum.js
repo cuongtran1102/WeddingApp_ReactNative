@@ -7,3 +7,9 @@ export const Status = {
     'PENDING': 'PENDING',
     'COMPLETED': 'COMPLETED'
 }
+
+export const SHIFT = {
+    'MORNING': 'MORNING',
+    'AFTERNOON': 'AFTERNOON',
+    'EVENING': 'EVENING'
+}
