@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import HistoryStyles from "../Booking History/HistoryStyles";
 import API, { Endpoints } from "../../configs/API";
 
-export default Home = () => {
+export default Home = ({navigation}) => {
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false)
     const [halls, setHalls] = useState(null)
@@ -59,7 +59,11 @@ export default Home = () => {
                         <Text style={HistoryStyles.cardTitle}>{item.name}</Text>
                         <Text style={HistoryStyles.bookingDate}>{item.description_text}</Text>
                     </View>
-                    <TouchableOpacity style={HistoryStyles.buttonBooking}>
+                    <TouchableOpacity style={HistoryStyles.buttonBooking} onPress={() => {
+                        navigation.navigate('BookingDetail', {
+                            'weddingHall': item
+                        })
+                    }}>
                         <Text style={HistoryStyles.bookingText}>Đặt Tiệc</Text>
                     </TouchableOpacity>
                 </View>

@@ -1,50 +1,28 @@
-import { ImageBackground, View, Text, SafeAreaView, TouchableOpacity, ScrollView, Image } from "react-native";
+import { ImageBackground, View, Text, SafeAreaView, TouchableOpacity, ScrollView, Image, ActivityIndicator } from "react-native";
 import BookingDetailStyles from "./BookingDetailStyles";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dropdown } from 'react-native-element-dropdown';
 import { MultiSelect } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MenuStyles from "./MenuStyles";
 import Counter from "react-native-counters";
+import API, { Endpoints } from "../../configs/API";
+import { SHIFT } from "../../configs/Enum";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const data = [
-    { label: 'Sáng', value: '1' },
-    { label: 'Chiều', value: '2' },
-    { label: 'Tối', value: '3' },
-];
-
-const menuData = [
-    {
-        label: 'Salad', value: '1', price: '130000',
-        image: 'https://www.eatright.org/-/media/images/eatright-landing-pages/foodgroupslp_804x482.jpg?as=0&w=967&rev=d0d1ce321d944bbe82024fff81c938e7&hash=E6474C8EFC5BE5F0DA9C32D4A797D10D'
-    },
-    {
-        label: 'Mỳ Ý', value: '2', price: '215000',
-        image: 'https://images.immediate.co.uk/production/volatile/sites/30/2013/05/spaghetti-carbonara-382837d.jpg?resize=768,574'
-    },
-    {
-        label: 'Pizza', value: '3', price: '150000',
-        image: 'https://media.cnn.com/api/v1/images/stellar/prod/140430115517-06-comfort-foods.jpg?q=w_1110,c_fill'
-    },
-];
-const serviceData = [
-    {
-        label: 'Chụp Ảnh Cưới', value: '1', price: '3150000',
-        image: 'https://forevermark.vn/wp-content/uploads/2023/06/ly-do-nen-su-dung-dich-vu-cuoi-hoi-tron-goi.jpg'
-    },
-    {
-        label: 'Trang Phục Cưới', value: '2', price: '4500000',
-        image: 'https://forevermark.vn/wp-content/uploads/2023/06/cho-thue-trang-phuc-dam-hoi.jpg'
-    },
+    { label: 'Sáng', value: SHIFT['MORNING'] },
+    { label: 'Chiều', value: SHIFT['AFTERNOON'] },
+    { label: 'Tối', value: SHIFT['EVENING'] },
 ];
 
 const renderMenuItem = item => {
     return (
         <View style={MenuStyles.item}>
-            <Text style={MenuStyles.selectedTextStyle}>{item.label}</Text>
-            <Text style={MenuStyles.selectedPriceStyle}>{item.price}</Text>
-            <Image source={{ uri: item.image }} style={{ width: 40, height: 40, borderRadius: 15, marginRight: 5 }} />
+            <Text style={MenuStyles.selectedTextStyle}>{item.name}</Text>
+            <Text style={MenuStyles.selectedPriceStyle}>{item.unit_price}</Text>
+            <Image source={{ uri: item.url }} style={{ width: 40, height: 40, borderRadius: 15, marginRight: 5 }} />
         </View>
     );
 };
@@ -52,17 +30,128 @@ const renderMenuItem = item => {
 const renderServiceItem = item => {
     return (
         <View style={MenuStyles.item}>
-            <Text style={MenuStyles.selectedTextStyle}>{item.label}</Text>
-            <Text style={MenuStyles.selectedPriceStyle}>{item.price}</Text>
-            <Image source={{ uri: item.image }} style={{ width: 40, height: 40, borderRadius: 15, marginRight: 5 }} />
+            <Text style={MenuStyles.selectedTextStyle}>{item.name}</Text>
+            <Text style={MenuStyles.selectedPriceStyle}>{item.unit_price}</Text>
+            {/* <Image source={{ uri: item.image }} style={{ width: 40, height: 40, borderRadius: 15, marginRight: 5 }} /> */}
         </View>
     );
 };
 
-export default BookingDetail = () => {
+export default BookingDetail = ({route}) => {
+    // Use State
     const [value, setValue] = useState(null);
+    const [menuItems, setMenuItems] = useState(null)
+    const [serviceItems, setServiceItems] = useState(null)
     const [selectedMenu, setSelectedMenu] = useState([]);
     const [selectedService, setSelectedService] = useState([]);
+    const [unitPrice, setUnitPrice] = useState(0)
+    const [orderDate, setOrderDate] = useState(new Date('2024-12-10'))
+    const [loading ,setLoading] = useState(false)
+    const {weddingHall} = route.params
+
+
+    // function
+
+    const fetchApiMenuDetail = async (quantity=1) => {
+        let menus = []
+
+        for (let item of selectedMenu) {
+            try {
+                let {data} = await API.get(Endpoints['menu']['detail'](item))
+            menus.push({
+                'id': data.id,
+                'unit_price': data.unit_price,
+                'quantity': quantity
+            })
+            } catch(ex) {
+                console.log('Error Menu')
+                console.log(ex)
+                return []
+            }
+        }
+        return menus
+    }
+
+    const fetchApiServiceDetail = async () => {
+        let services = []
+
+        for (let item of selectedService) {
+            try {
+                let {data} = await API.get(Endpoints['service']['detail'](item))
+                services.push({
+                    'id': data.id,
+                    'unit_price': data.unit_price
+                })
+            } catch(ex) {
+                console.log('Error service')
+                console.log(ex)
+                return []
+            }
+        }
+        return services
+    }
+
+
+    const getUnitPrice = (shift) => {
+        switch(shift) {
+            case SHIFT['MORNING']:
+                return weddingHall.price_morning
+            case SHIFT['AFTERNOON']:
+                return weddingHall.price_afternoon
+            default:
+                return weddingHall.price_evening
+        }
+    }
+    
+
+    const isWeekend = (date) => {
+        return date.getDay() === 0
+    }
+
+    const submit = async () => {
+        try {
+            console.log(weddingHall)
+            setLoading(true)
+            let token = await AsyncStorage.getItem('token')
+
+            let menuSelected = await fetchApiMenuDetail(10)
+            let serviceSelected = await fetchApiServiceDetail()
+
+            let data = {
+                "unit_price": getUnitPrice(value),
+                "order_date": new Date('2024-12-10'),
+                "wedding_hall_id": weddingHall.id,
+                "shift_party": value,
+                "is_weekend": isWeekend(orderDate),
+                "services": serviceSelected,
+                "menus": menuSelected
+            }
+        } catch(ex) {
+            console.log(ex)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+
+
+    // use Effect
+    useEffect(() => {
+        const loadData = async() => {
+            try {
+                let res = await API.get(Endpoints['menu']['list'])
+                setMenuItems(res.data.results)
+                res = await API.get(Endpoints['service']['list'])
+                setServiceItems(res.data.results)
+            } catch(ex) {
+                console.log(ex)
+            }
+        }
+
+        loadData()
+    }, [])
+
+    if (menuItems === null || serviceItems === null) return <ActivityIndicator />
 
     return (
         <ScrollView>
@@ -120,17 +209,15 @@ export default BookingDetail = () => {
                         selectedTextStyle={MenuStyles.selectedTextStyle}
                         inputSearchStyle={MenuStyles.inputSearchStyle}
                         iconStyle={MenuStyles.iconStyle}
-                        data={menuData}
-                        labelField="label"
-                        valueField="value"
+                        data={menuItems}
+                        labelField="name"
+                        valueField="id"
                         placeholder={<Text style={{ fontSize: 12, fontWeight: 'bold', color: '#000080' }}> Chọn Món</Text>}
                         value={selectedMenu}
                         search
                         searchPlaceholder="Tìm..."
-                        maxSelect={7}
-                        onChange={item => {
-                            setSelectedMenu(item);
-                        }}
+                        // maxSelect={10}
+                        onChange={items => setSelectedMenu(items)}
                         renderLeftIcon={() => (
                             <AntDesign
                                 style={MenuStyles.icon}
@@ -143,8 +230,8 @@ export default BookingDetail = () => {
                         renderSelectedItem={(item, unSelect) => (
                             <TouchableOpacity style={{ marginHorizontal: 10 }} onPress={() => unSelect && unSelect(item)}>
                                 <View style={MenuStyles.selectedStyle}>
-                                    <Image source={{ uri: item.image }} style={{ width: 40, height: 40, borderRadius: 15, marginRight: 5 }} />
-                                    <Text style={MenuStyles.textSelectedStyle}>{item.label}</Text>
+                                    <Image source={{ uri: item.url }} style={{ width: 40, height: 40, borderRadius: 15, marginRight: 5 }} />
+                                    <Text style={MenuStyles.textSelectedStyle}>{item.name}</Text>
                                     <AntDesign color="black" name="closecircle" size={17} />
                                 </View>
                             </TouchableOpacity>
@@ -186,14 +273,14 @@ export default BookingDetail = () => {
                         selectedTextStyle={MenuStyles.selectedTextStyle}
                         inputSearchStyle={MenuStyles.inputSearchStyle}
                         iconStyle={MenuStyles.iconStyle}
-                        data={serviceData}
-                        labelField="label"
-                        valueField="value"
+                        data={serviceItems}
+                        labelField="name"
+                        valueField="id"
                         placeholder={<Text style={{ fontSize: 12, fontWeight: 'bold', color: '#000080' }}> Chọn Dịch Vụ</Text>}
                         value={selectedService}
                         search
                         searchPlaceholder="Tìm..."
-                        maxSelect={7}
+                        // maxSelect={7}
                         onChange={item => {
                             setSelectedService(item);
                         }}
@@ -209,8 +296,8 @@ export default BookingDetail = () => {
                         renderSelectedItem={(item, unSelect) => (
                             <TouchableOpacity style={{ marginHorizontal: 10 }} onPress={() => unSelect && unSelect(item)}>
                                 <View style={MenuStyles.selectedStyle}>
-                                    <Image source={{ uri: item.image }} style={{ width: 40, height: 40, borderRadius: 15, marginRight: 5 }} />
-                                    <Text style={MenuStyles.textSelectedStyle}>{item.label}</Text>
+                                    {/* <Image source={{ uri: item.image }} style={{ width: 40, height: 40, borderRadius: 15, marginRight: 5 }} /> */}
+                                    <Text style={MenuStyles.textSelectedStyle}>{item.name}</Text>
                                     <AntDesign color="black" name="closecircle" size={17} />
                                 </View>
                             </TouchableOpacity>
@@ -218,9 +305,12 @@ export default BookingDetail = () => {
                     />
                 </View>
                 <View style={BookingDetailStyles.line} />
-                <TouchableOpacity style={BookingDetailStyles.btnBookingParty}>
-                    <Text style={{ fontSize: 15, fontWeight: 'bold', color: '#000080' }}>Đặt Tiệc</Text>
-                </TouchableOpacity>
+                {
+                    loading ? <ActivityIndicator /> :
+                    <TouchableOpacity style={BookingDetailStyles.btnBookingParty} onPress={submit}>
+                        <Text style={{ fontSize: 15, fontWeight: 'bold', color: '#000080' }}>Đặt Tiệc</Text>
+                    </TouchableOpacity>
+                }
                 <View style={BookingDetailStyles.line} />
                 <Text style={BookingDetailStyles.txtConfirm}>Đánh Giá</Text>
 
