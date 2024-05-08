@@ -84,7 +84,6 @@ export default EditProfile = () => {
       let token = await AsyncStorage.getItem('token')
       let res = await AuthAPI(token).get(Endpoints['user']['current'])
       setCurrentUser(res.data)
-      console.log(res.data)
       setAvatar(res.data.avatar)
       // setLocalAvatar
       dispatch({
