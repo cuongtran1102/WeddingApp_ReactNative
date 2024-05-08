@@ -5,7 +5,7 @@ const screenWidth = Dimensions.get('window').width;
 
 export default StyleSheet.create({
     imageStyle:{
-        height: screenHeight * 0.36,
+        height: screenHeight * 0.33,
     },
     viewIcon:{
         width: 33,
@@ -13,14 +13,14 @@ export default StyleSheet.create({
         borderRadius: 8,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         marginLeft: 10,
-        marginTop: 30,
+        marginTop: 10,
         padding: 3,
         alignItems: 'center',
         justifyContent: 'center'
     },
     viewDiscription:{
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        height: screenHeight * 0.2,
+        height: screenHeight * 0.18,
         width: '100%',
         position: 'absolute',
         bottom: 0,

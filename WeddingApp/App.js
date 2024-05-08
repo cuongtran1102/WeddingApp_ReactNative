@@ -58,7 +58,9 @@ export default function App() {
                 name='BookingDetail'
                 component={BookingDetail}
                 options={{
-                  title: 'Lịch Sử Đặt Tiệc', drawerIcon: ({ focused, color, size }) => (
+                  title: 'Đặt Tiệc', 
+                  drawerItemStyle: {display: 'none'},
+                  drawerIcon: ({ focused, color, size }) => (
                     <Ionicons name={focused ? 'time' : 'time-outline'} size={size} color={color} />
                   )
                 }} />
