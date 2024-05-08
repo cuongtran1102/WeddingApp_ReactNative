@@ -6,7 +6,7 @@ import HistoryStyles from "../Booking History/HistoryStyles";
 import API, { Endpoints } from "../../configs/API";
 
 
-export default Home = ({navigation}) => {
+export default Home = ({ navigation }) => {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [isloading, setIsLoading] = useState(false);
@@ -16,7 +16,7 @@ export default Home = ({navigation}) => {
     useEffect(() => {
         fetchData();
     }, []);
-  
+
     const fetchData = async () => {
         try {
             setIsLoading(true);
@@ -43,7 +43,11 @@ export default Home = ({navigation}) => {
                 <Text style={HistoryStyles.cardTitle}>{item.name}</Text>
                 <Text style={HistoryStyles.bookingDate}>{item.description_text}</Text>
             </View>
-            <TouchableOpacity style={HistoryStyles.buttonBooking}>
+            <TouchableOpacity onPress={() => {
+                navigation.navigate('BookingDetail', {
+                    'weddingHall': item})}
+                } 
+                style={HistoryStyles.buttonBooking}>
                 <Text style={HistoryStyles.bookingText}>Đặt Tiệc</Text>
             </TouchableOpacity>
         </View>
