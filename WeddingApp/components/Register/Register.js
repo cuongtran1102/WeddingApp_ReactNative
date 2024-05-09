@@ -106,6 +106,7 @@ export default Register = ({ navigation }) => {
                     <View style={RegisterStyles.viewInput}>
                         <Ionicons name="mail-outline" size={24} color='#1e90ff' style={{ marginRight: 10 }} />
                         <TextInput
+                        inputMode="email"
                             placeholder="Email"
                             style={RegisterStyles.textInput}
                             onChangeText={evt => changeValue('email', evt)}
