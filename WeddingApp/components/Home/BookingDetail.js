@@ -1,4 +1,4 @@
-import { ImageBackground, View, Text, SafeAreaView, TouchableOpacity, ScrollView, Image, ActivityIndicator, Alert } from "react-native";
+import { ImageBackground, View, Text, SafeAreaView, TouchableOpacity, ScrollView, Image, ActivityIndicator, Alert, LogBox } from "react-native";
 import BookingDetailStyles from "./BookingDetailStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -38,7 +38,9 @@ const renderServiceItem = item => {
     );
 };
 
-export default BookingDetail = ({ route }) => {
+export default BookingDetail = ({route}) => {
+    LogBox.ignoreAllLogs()
+
     // Use State
     const [value, setValue] = useState(null);
     const [menuItems, setMenuItems] = useState(null)
