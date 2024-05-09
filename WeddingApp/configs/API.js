@@ -13,7 +13,8 @@ export const Endpoints = {
         'list': '/wedding-hall/'
     },
     'party': {
-        'history': 'wedding-party/history/'
+        'history': 'wedding-party/history/',
+        'add': 'weddingapp/wedding-party/'
     },
     'menu': {
         'list': '/menus/',
