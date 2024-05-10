@@ -14,11 +14,8 @@ import Login from './components/Login/Login';
 import Feedback from './components/Booking History/Feedback'
 import Register from './components/Register/Register';
 import BookingDetail from './components/Home/BookingDetail';
-import { createStackNavigator } from '@react-navigation/stack';
 
 const Drawer = createDrawerNavigator();
-const Stack = createStackNavigator();
-
 
 export default function App() {
   const [currentUser, dispatch] = useReducer(MyUserReducer, null)
@@ -27,10 +24,6 @@ export default function App() {
   return (
     <UserContext.Provider value={[currentUser, dispatch]}>
       <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name='Feedback' component={Feedback}/>
-        </Stack.Navigator>
-
         <Drawer.Navigator
           drawerContent={(props) => <CustomDrawer {...props}
           />}
