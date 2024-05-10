@@ -1,4 +1,4 @@
-import { ImageBackground, View, Text, SafeAreaView, TouchableOpacity, ScrollView, Image, ActivityIndicator } from "react-native";
+import { ImageBackground, View, Text, SafeAreaView, TouchableOpacity, ScrollView, Image, ActivityIndicator, Alert, LogBox } from "react-native";
 import BookingDetailStyles from "./BookingDetailStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -7,7 +7,7 @@ import { MultiSelect } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MenuStyles from "./MenuStyles";
 import Counter from "react-native-counters";
-import API, { Endpoints } from "../../configs/API";
+import API, { AuthAPI, Endpoints } from "../../configs/API";
 import { SHIFT } from "../../configs/Enum";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNDateTimePicker from '@react-native-community/datetimepicker';
@@ -38,7 +38,9 @@ const renderServiceItem = item => {
     );
 };
 
-export default BookingDetail = ({ route }) => {
+export default BookingDetail = ({route}) => {
+    LogBox.ignoreAllLogs()
+
     // Use State
     const [value, setValue] = useState(null);
     const [menuItems, setMenuItems] = useState(null)
@@ -123,22 +125,30 @@ export default BookingDetail = ({ route }) => {
 
     const submit = async () => {
         try {
-            console.log(weddingHall)
             setLoading(true)
             let token = await AsyncStorage.getItem('token')
 
-            let menuSelected = await fetchApiMenuDetail(10)
+            let menuSelected = await fetchApiMenuDetail(counterValue)
             let serviceSelected = await fetchApiServiceDetail()
 
             let data = {
                 "unit_price": getUnitPrice(value),
-                "order_date": new Date('2024-12-10'),
+                "order_date": selectedDate.toISOString().split('T')[0],
                 "wedding_hall_id": weddingHall.id,
                 "shift_party": value,
                 "is_weekend": isWeekend(orderDate),
                 "services": serviceSelected,
                 "menus": menuSelected
             }
+
+            try {
+                let res = await AuthAPI(token).post(Endpoints['party']['add'], data)
+                Alert.alert('Đặt Tiệc Thành Công')
+            } catch(ex) {
+                console.log('Có lỗi xảy ra. Vui lòng thử lại')
+                console.log(ex)
+            }
+            
         } catch (ex) {
             console.log(ex)
         } finally {

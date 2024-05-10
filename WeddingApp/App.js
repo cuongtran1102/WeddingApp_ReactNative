@@ -15,7 +15,7 @@ import Feedback from './components/Booking History/Feedback'
 import Register from './components/Register/Register';
 import BookingDetail from './components/Home/BookingDetail';
 import { createStackNavigator } from '@react-navigation/stack';
-
+import Feedback from './components/Booking History/Feedback';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -66,6 +66,16 @@ export default function App() {
                 component={BookingDetail}
                 options={{
                   title: 'Đặt Tiệc', 
+                  drawerItemStyle: {display: 'none'},
+                  drawerIcon: ({ focused, color, size }) => (
+                    <Ionicons name={focused ? 'time' : 'time-outline'} size={size} color={color} />
+                  )
+                }} />
+                <Drawer.Screen
+                name='Feedback'
+                component={Feedback}
+                options={{
+                  title: 'Đánh giá', 
                   drawerItemStyle: {display: 'none'},
                   drawerIcon: ({ focused, color, size }) => (
                     <Ionicons name={focused ? 'time' : 'time-outline'} size={size} color={color} />
