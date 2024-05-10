@@ -14,7 +14,9 @@ export const Endpoints = {
     },
     'party': {
         'history': 'wedding-party/history/',
-        'add': 'weddingapp/wedding-party/'
+        'add': 'weddingapp/wedding-party/',
+        'detail': (partyId) => `wedding-party/${partyId}/`,
+        'feedback': (partyId) => `wedding-party/${partyId}/feedbacks/`
     },
     'menu': {
         'list': '/menus/',
@@ -23,6 +25,10 @@ export const Endpoints = {
     'service': {
         'list': '/services/',
         'detail': (id) => `/services/${id}/`
+    },
+    'feedback': {
+        'party': '/feedbacks/party/',
+        'hall': '/feedbacks/hall/',
     }
 }
 

@@ -13,6 +13,7 @@ import UserContext from './contexts/UserContext';
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import BookingDetail from './components/Home/BookingDetail';
+import Feedback from './components/Booking History/Feedback';
 
 
 const Drawer = createDrawerNavigator();
@@ -59,6 +60,16 @@ export default function App() {
                 component={BookingDetail}
                 options={{
                   title: 'Đặt Tiệc', 
+                  drawerItemStyle: {display: 'none'},
+                  drawerIcon: ({ focused, color, size }) => (
+                    <Ionicons name={focused ? 'time' : 'time-outline'} size={size} color={color} />
+                  )
+                }} />
+                <Drawer.Screen
+                name='Feedback'
+                component={Feedback}
+                options={{
+                  title: 'Đánh giá', 
                   drawerItemStyle: {display: 'none'},
                   drawerIcon: ({ focused, color, size }) => (
                     <Ionicons name={focused ? 'time' : 'time-outline'} size={size} color={color} />
