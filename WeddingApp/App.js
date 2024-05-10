@@ -15,7 +15,6 @@ import Feedback from './components/Booking History/Feedback'
 import Register from './components/Register/Register';
 import BookingDetail from './components/Home/BookingDetail';
 import { createStackNavigator } from '@react-navigation/stack';
-import Feedback from './components/Booking History/Feedback';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
