@@ -20,7 +20,6 @@ export default RecentlyBooking = () => {
     useEffect(() => {
         const loadHistory = async () => {
             let token = await AsyncStorage.getItem('token')
-            console.log(token)
             try {
                 let { data } = await AuthAPI(token).get(`${Endpoints['party']['history']}?status=${Status['PENDING']}`)
                 setParties(data)
@@ -38,11 +37,12 @@ export default RecentlyBooking = () => {
         <ScrollView refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-            <TouchableOpacity style={HistoryStyles.card}>
-                {
-                    
-                    parties.map(item => (
-                        <View key={item.id}>
+            
+            {
+
+                parties.map(item => (
+                    <TouchableOpacity style={HistoryStyles.card} key={item.id}>
+                        <View>
                             <Image
                                 source={{ uri: item.wedding_hall.img }}
                                 style={HistoryStyles.cardImage} />
@@ -53,9 +53,10 @@ export default RecentlyBooking = () => {
                                 <Text style={HistoryStyles.cardPrice}>Tổng chi phí: {formattedNumber(item.total)} VND</Text>
                             </View>
                         </View>
-                    ))
-                }
-            </TouchableOpacity>
+                    </TouchableOpacity>
+                ))
+            }
+            
         </ScrollView>
     );
 }

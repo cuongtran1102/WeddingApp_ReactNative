@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthAPI, Endpoints } from "../../configs/API";
 import { Status } from "../../configs/Enum";
 
-export default History = () => {
+export default History = ({navigation}) => {
     const [refreshing, setRefreshing] = useState(false);
     const [parties, setParties] = useState(null)
 
@@ -20,7 +20,6 @@ export default History = () => {
     useEffect(() => {
         const loadHistory = async () => {
             let token = await AsyncStorage.getItem('token')
-            console.log(token)
             try {
                 let { data } = await AuthAPI(token).get(`${Endpoints['party']['history']}?status=${Status['COMPLETED']}`)
                 setParties(data)
@@ -50,8 +49,10 @@ export default History = () => {
                             <Text style={HistoryStyles.bookingDate}>Ngày tổ chức: {item.order_date}</Text>
                             <Text style={HistoryStyles.cardPrice}>Tổng chi phí: {item.total} VND</Text>
                         </View>
-                        <TouchableOpacity style={HistoryStyles.buttonFeedBack}>
-                            <Text style={HistoryStyles.buttonText}>Đánh giá chất lượng dịch vụ</Text>
+                        <TouchableOpacity style={HistoryStyles.buttonFeedBack} onPress={() => navigation.navigate('Feedback', {
+                            'partyId': item.id
+                        })}>
+                            <Text style={HistoryStyles.buttonText}>Đánh giá chất lượng dịch vụ {item.id} </Text>
                         </TouchableOpacity>
                     </View>
                 ))
