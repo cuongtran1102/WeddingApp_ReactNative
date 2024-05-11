@@ -14,6 +14,7 @@ import Login from './components/Login/Login';
 import Feedback from './components/Booking History/Feedback'
 import Register from './components/Register/Register';
 import BookingDetail from './components/Home/BookingDetail';
+import ManageParty from './components/ManageParty/ManageParty';
 
 const Drawer = createDrawerNavigator();
 
@@ -53,22 +54,30 @@ export default function App() {
                     <Ionicons name={focused ? 'time' : 'time-outline'} size={size} color={color} />
                   )
                 }} />
-                <Drawer.Screen
+              <Drawer.Screen
+                name='ManageParty'
+                component={ManageParty}
+                options={{
+                  title: 'Quản Lý Đặt Tiệc', drawerIcon: ({ focused, color, size }) => (
+                    <Ionicons name={focused ? 'reader' : 'reader-outline'} size={size} color={color} />
+                  )
+                }} />
+              <Drawer.Screen
                 name='BookingDetail'
                 component={BookingDetail}
                 options={{
-                  title: 'Đặt Tiệc', 
-                  drawerItemStyle: {display: 'none'},
+                  title: 'Đặt Tiệc',
+                  drawerItemStyle: { display: 'none' },
                   drawerIcon: ({ focused, color, size }) => (
                     <Ionicons name={focused ? 'time' : 'time-outline'} size={size} color={color} />
                   )
                 }} />
-                <Drawer.Screen
+              <Drawer.Screen
                 name='Feedback'
                 component={Feedback}
                 options={{
-                  title: 'Đánh giá', 
-                  drawerItemStyle: {display: 'none'},
+                  title: 'Đánh giá',
+                  drawerItemStyle: { display: 'none' },
                   drawerIcon: ({ focused, color, size }) => (
                     <Ionicons name={focused ? 'time' : 'time-outline'} size={size} color={color} />
                   )
