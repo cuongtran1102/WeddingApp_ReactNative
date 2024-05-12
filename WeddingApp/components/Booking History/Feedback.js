@@ -63,7 +63,7 @@ export default Feedback = ({route}) => {
 
         loadParty()
         get_feedback()
-    }, [])
+    }, [partyId])
 
     if (party === null) return <ActivityIndicator />
 
