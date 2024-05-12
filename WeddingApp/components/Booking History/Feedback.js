@@ -111,7 +111,7 @@ export default Feedback = ({route}) => {
                     <View key={index}>
                         <View style={FeedbackStyles.viewMenu}>
                             <Image style={FeedbackStyles.imageMenu}
-                                source={{ uri: 'https://res.cloudinary.com/dvevyvqyt/image/upload/v1712892405/kcd2fv3xkeywsmtrdknd.jpg' }} />
+                                source={{ uri: item.menu_name.img }} />
                             <Text style={FeedbackStyles.textNameMenu}>{item.menu_name}</Text>
                             <Text style={FeedbackStyles.textPriceMenu}>{item.unit_price * item.quantity}</Text>
                         </View>

@@ -37,6 +37,8 @@ export default History = ({navigation}) => {
         <ScrollView refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
+
+            {parties.length === 0 && <Text>CHưa có lịch sử đặt</Text>}
             {
                 parties.map(item => (
                     <View style={HistoryStyles.cardHistory} key={item.id}>
