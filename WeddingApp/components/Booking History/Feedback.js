@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthAPI, Endpoints } from '../../configs/API';
 import { SHIFT } from '../../configs/Enum';
 
-export default Feedback = ({route}) => {
+export default Feedback = ({route, navigation}) => {
     const [party, setParty] = useState(null)
     const {partyId} = route.params
     const [loading, setLoading]= useState(false)
@@ -70,7 +70,7 @@ export default Feedback = ({route}) => {
     return(
         <ScrollView>
             <ImageBackground style={BookingDetailStyles.imageStyle} source={{ uri: 'https://callabridal.com.vn/wp-content/uploads/2023/05/cx2.jpeg' }}>
-                <TouchableOpacity style={BookingDetailStyles.viewIcon}>
+                <TouchableOpacity onPress={() => navigation.navigate('BookingHistory')} style={BookingDetailStyles.viewIcon}>
                     <Ionicons name="chevron-back-outline" size={24} color={'white'} />
                 </TouchableOpacity>
                 <View style={BookingDetailStyles.viewDiscription}>
