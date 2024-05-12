@@ -7,7 +7,8 @@ export const Endpoints = {
         'current': '/users/current-user/',
         'register': '/users/',
         'edit': '/users/edit/',
-        'change-password': '/users/change-password/'
+        'change-password': '/users/change-password/',
+        'role': '/users/role/'
     },
     'wedding-hall': {
         'list': '/wedding-hall/'
