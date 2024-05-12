@@ -1,14 +1,18 @@
 import { StyleSheet } from "react-native";
 
 
-export default LogoutSyle = StyleSheet.create({
-    'btn-logout': {
-        'width': 100,
-        'height': 44,
-        'padding': 8,
-        'border-radius': 10,
-        'background-color': '#337AB7',
-        'border-width': 1,
-        // 'font-size': 1
+export default StyleSheet.create({
+    btnLogout:{
+        backgroundColor: '#98fb98',
+        borderRadius: 8,
+        flexDirection: 'row',
+        padding: 10,
+        alignItems: 'center'
+    },
+    textLogout:{
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: 'white',
+        marginLeft: 5
     }
-})
+});
