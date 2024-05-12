@@ -64,5 +64,14 @@ export default StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
         color: '#4b0082'
+    },
+    historyText:{
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#4b0082',
+    },
+    viewHistoryText:{
+        alignItems: 'center',
+        marginTop: screenHeight * 0.4
     }
 });

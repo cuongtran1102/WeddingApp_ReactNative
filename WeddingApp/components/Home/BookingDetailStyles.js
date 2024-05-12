@@ -112,5 +112,33 @@ export default StyleSheet.create({
         fontSize: 12,
         color: '#000080',
         fontWeight: 'bold'
+      },
+      avatarUser:{
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        marginRight: 10
+      },
+      viewComment:{
+        marginTop: 10,
+        marginHorizontal: 10,
+        backgroundColor: '#00ffff',
+        borderRadius: 8,
+        padding: 8
+      },
+      viewInforUser:{
+        flexDirection: 'row',
+        alignItems: 'center'
+      },
+      textNameUser:{
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: '#000080'
+      },
+      textComment:{
+        marginTop: 8,
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: '#000080'
       }
 });
