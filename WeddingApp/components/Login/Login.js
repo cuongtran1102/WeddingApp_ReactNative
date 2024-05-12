@@ -30,6 +30,8 @@ export default Login = ({navigation}) =>{
                 'type': 'login',
                 'payload': res.data
             })
+            let resRole = await AuthAPI(data.access_token).get(Endpoints['user']['role'])
+            await AsyncStorage.setItem('role', resRole.data === 'None' ? 'customer'.toUpperCase() : resRole.data.toUpperCase())
             navigation.navigate('Home')
         }
         catch(ex){
