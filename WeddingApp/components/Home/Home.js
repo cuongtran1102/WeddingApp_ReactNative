@@ -12,6 +12,7 @@ export default Home = ({ navigation }) => {
     const [isloading, setIsLoading] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isLoadComplete, setIsLoadComplete] = useState(false);
+    const [q, setQ] = useState('')
 
     useEffect(() => {
         fetchData();
@@ -22,6 +23,10 @@ export default Home = ({ navigation }) => {
             setIsLoading(true);
             let url = Endpoints['wedding-hall']['list'];
             const response = await API.get(`${url}?page=${currentPage}`);
+            if (q !== '') {
+                url = `${Endpoints['wedding-hall']['list']}?page=${currentPage}&name=${q}`
+            }
+            console.log(url)
             if (response.data.next === null) {
                 setIsLoadComplete(true);
             }
@@ -82,7 +87,7 @@ export default Home = ({ navigation }) => {
         <View>
             <View style={MyStyles.viewInput}>
                 <Ionicons name="search-outline" size={24} color='#1e90ff' style={{ marginRight: 10 }} />
-                <TextInput placeholder="Tra cứu..." style={MyStyles.searchInput}></TextInput>
+                <TextInput onChangeText={evt => setQ(evt)} placeholder="Tra cứu..." style={MyStyles.searchInput}></TextInput>
             </View>
             <View style={MyStyles.line} />
             <FlatList
