@@ -39,6 +39,7 @@ export default History = ({navigation}) => {
         }>
 
             {parties.length === 0 && <View style={HistoryStyles.viewHistoryText}><Text style={HistoryStyles.historyText}>Chưa có lịch sử đặt</Text></View>}
+            
             {
                 parties.map(item => (
                     <View style={HistoryStyles.cardHistory} key={item.id}>
