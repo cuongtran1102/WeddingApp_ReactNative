@@ -12,22 +12,22 @@ export default History = ({navigation}) => {
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        setTimeout(() => {
-            setRefreshing(false)
-        }, 2000);
+        setParties([]);
+        loadHistory();
+        setRefreshing(false);
     }, []);
 
-    useEffect(() => {
-        const loadHistory = async () => {
-            let token = await AsyncStorage.getItem('token')
-            try {
-                let { data } = await AuthAPI(token).get(`${Endpoints['party']['history']}?status=${Status['COMPLETED']}`)
-                setParties(data)
-            } catch (ex) {
-                console.log(ex)
-            }
+    const loadHistory = async () => {
+        let token = await AsyncStorage.getItem('token')
+        try {
+            let { data } = await AuthAPI(token).get(`${Endpoints['party']['history']}?status=${Status['COMPLETED']}`)
+            setParties(data)
+        } catch (ex) {
+            console.log(ex)
         }
+    }
 
+    useEffect(() => {
         loadHistory()
     }, [])
 
@@ -38,7 +38,8 @@ export default History = ({navigation}) => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
 
-            {parties.length === 0 && <Text style={{'marginTop': 8, 'marginLeft': 8}}>CHưa có lịch sử đặt</Text>}
+            {parties.length === 0 && <View style={HistoryStyles.viewHistoryText}><Text style={HistoryStyles.historyText}>Chưa có lịch sử đặt</Text></View>}
+            
             {
                 parties.map(item => (
                     <View style={HistoryStyles.cardHistory} key={item.id}>

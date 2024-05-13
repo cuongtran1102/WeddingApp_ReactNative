@@ -38,7 +38,7 @@ const renderServiceItem = item => {
     );
 };
 
-export default BookingDetail = ({route}) => {
+export default BookingDetail = ({route, navigation}) => {
     LogBox.ignoreAllLogs()
 
     // Use State
@@ -178,14 +178,13 @@ export default BookingDetail = ({route}) => {
 
     return (
         <ScrollView>
-            <ImageBackground style={BookingDetailStyles.imageStyle} source={{ uri: 'https://callabridal.com.vn/wp-content/uploads/2023/05/cx2.jpeg' }}>
-                <TouchableOpacity onPress={() => setShowDatePicker(true)} style={BookingDetailStyles.viewIcon}>
+            <ImageBackground style={BookingDetailStyles.imageStyle} source={{ uri:  weddingHall.img}}>
+                <TouchableOpacity onPress={() => navigation.navigate('Home')} style={BookingDetailStyles.viewIcon}>
                     <Ionicons name="chevron-back-outline" size={24} color={'white'} />
                 </TouchableOpacity>
                 <View style={BookingDetailStyles.viewDiscription}>
-                    <Text style={BookingDetailStyles.textTitle}>Flower Garden</Text>
-                    <Text style={BookingDetailStyles.textDiscription}>Vườn hoa với hoa đào chủ đạo
-                        mang lại cảm giác ấm áp hài hòa phù hợp với những tâm hồn hòa quyện thiên nhiên</Text>
+                    <Text style={BookingDetailStyles.textTitle}>{weddingHall.name}</Text>
+                    <Text style={BookingDetailStyles.textDiscription}>{weddingHall.description_text}</Text>
                     <Text style={BookingDetailStyles.textPrice}>5.500.000 VND</Text>
                 </View>
             </ImageBackground>
@@ -347,8 +346,14 @@ export default BookingDetail = ({route}) => {
                 <Text style={BookingDetailStyles.txtConfirm}>Đánh Giá</Text>
 
                 {/* Comments View */}
-                <View>
-
+                <View style={BookingDetailStyles.viewComment}>
+                    <View style={BookingDetailStyles.viewInforUser}>
+                        <Image source={{uri: 'https://res.cloudinary.com/dvevyvqyt/pkw5fui4795zazpplp2p'}} 
+                        style={BookingDetailStyles.avatarUser}/>
+                        <Text style={BookingDetailStyles.textNameUser}>Cương Trần</Text>
+                    </View>
+                    <Text style={BookingDetailStyles.textComment}>Quá tệ, đề nghị mọi người đừng đặt chỗ này!!! shshsdh snnsns
+                    snsnss msmmllslsl nnnncncncn sjdjjdjdj snnsnsn</Text>
                 </View>
             </View>
         </ScrollView>
