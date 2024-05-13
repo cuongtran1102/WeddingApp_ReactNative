@@ -1,4 +1,4 @@
-import{ActivityIndicator, Alert, Image, ImageBackground, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native'
+import { ActivityIndicator, Alert, Image, ImageBackground, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import BookingDetailStyles from '../Home/BookingDetailStyles';
 import { Ionicons } from '@expo/vector-icons';
 import MyStyles from "../../styles/MyStyles";
@@ -7,29 +7,30 @@ import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthAPI, Endpoints } from '../../configs/API';
 import { SHIFT } from '../../configs/Enum';
+import { formattedNumber } from '../../configs/Utils';
 
-export default Feedback = ({route, navigation}) => {
+export default Feedback = ({ route, navigation }) => {
     const [party, setParty] = useState(null)
-    const {partyId} = route.params
-    const [loading, setLoading]= useState(false)
+    const { partyId } = route.params
+    const [loading, setLoading] = useState(false)
     const [content, setContent] = useState('')
     const [feedBack, setFeedBack] = useState(null)
 
 
     // function
-    const feedback = async() => {
+    const feedback = async () => {
         let token = await AsyncStorage.getItem('token')
 
         try {
             setLoading(true)
-            let {data} =  await AuthAPI(token).post(Endpoints['party']['feedback'](partyId), {
+            let { data } = await AuthAPI(token).post(Endpoints['party']['feedback'](partyId), {
                 'content': content,
                 'wedding_hall_id': party.wedding_hall.id
             })
 
             console.log(data)
             Alert.alert('Gửi phản hồi thành công')
-        } catch(ex) {
+        } catch (ex) {
             Alert.alert('Gửi phản hồi thất bại')
         } finally {
             setLoading(false)
@@ -39,13 +40,13 @@ export default Feedback = ({route, navigation}) => {
 
     // use effect
     useEffect(() => {
-        const loadParty = async() => {
+        const loadParty = async () => {
             let token = await AsyncStorage.getItem('token')
             console.log(partyId)
             try {
-                let {data} = await AuthAPI(token).get(Endpoints['party']['detail'](partyId))
+                let { data } = await AuthAPI(token).get(Endpoints['party']['detail'](partyId))
                 setParty(data)
-            } catch(ex) {
+            } catch (ex) {
                 console.log(ex)
             }
         }
@@ -53,10 +54,10 @@ export default Feedback = ({route, navigation}) => {
         const get_feedback = async () => {
             let token = await AsyncStorage.getItem('token')
             try {
-                let {data} = await AuthAPI(token).get(`${Endpoints['feedback']['party']}?party=${partyId}`)
+                let { data } = await AuthAPI(token).get(`${Endpoints['feedback']['party']}?party=${partyId}`)
                 // console.log(data)
                 setFeedBack(data)
-            } catch(ex) {
+            } catch (ex) {
                 setFeedBack(null)
             }
         }
@@ -67,7 +68,7 @@ export default Feedback = ({route, navigation}) => {
 
     if (party === null) return <ActivityIndicator />
 
-    return(
+    return (
         <ScrollView>
             <ImageBackground style={BookingDetailStyles.imageStyle} source={{ uri: 'https://callabridal.com.vn/wp-content/uploads/2023/05/cx2.jpeg' }}>
                 <TouchableOpacity onPress={() => navigation.navigate('BookingHistory')} style={BookingDetailStyles.viewIcon}>
@@ -77,30 +78,30 @@ export default Feedback = ({route, navigation}) => {
                     <Text style={BookingDetailStyles.textTitle}>{party.wedding_hall.name}</Text>
                     <Text style={BookingDetailStyles.textDiscription}>{party.wedding_hall.description_text}</Text>
                     <Text style={BookingDetailStyles.textPrice}>{
-                        party.shift === SHIFT['MORNING'] ? party.price_morning : 
-                        party.shift === SHIFT['AFTERNOON'] ? party.price_afternoon : party.price_evening
+                        party.shift === SHIFT['MORNING'] ? party.price_morning :
+                            party.shift === SHIFT['AFTERNOON'] ? party.price_afternoon : party.price_evening
                     }</Text>
                 </View>
             </ImageBackground>
-            <View style={MyStyles.line}/>
+            <View style={MyStyles.line} />
             <View style={FeedbackStyles.viewTextDiscription}>
                 <Text style={FeedbackStyles.textDiscription}>Thông tin chi tiết</Text>
             </View>
             <View style={FeedbackStyles.viewBookingDate}>
-                <Text style={[FeedbackStyles.textBookingDate, {marginRight: 5}]}>Ngày đặt tiệc:</Text>
+                <Text style={[FeedbackStyles.textBookingDate, { marginRight: 5 }]}>Ngày đặt tiệc:</Text>
                 <Text style={FeedbackStyles.textBookingDate}>{party.created_date.split('T')[0]}</Text>
             </View>
             <View style={FeedbackStyles.viewBookingDate}>
-                <Text style={[FeedbackStyles.textBookingDate, {marginRight: 5}]}>Ngày tổ chức tiệc:</Text>
-                <Text style={[FeedbackStyles.textBookingDate, {marginRight: 5}]}>{party.order_date.split('T')[0]}</Text>
-                <Text style={[FeedbackStyles.textBookingDate, {marginRight: 5}]}>Buổi:</Text>
+                <Text style={[FeedbackStyles.textBookingDate, { marginRight: 5 }]}>Ngày tổ chức tiệc:</Text>
+                <Text style={[FeedbackStyles.textBookingDate, { marginRight: 5 }]}>{party.order_date.split('T')[0]}</Text>
+                <Text style={[FeedbackStyles.textBookingDate, { marginRight: 5 }]}>Buổi:</Text>
                 <Text style={FeedbackStyles.textBookingDate}>sáng</Text>
             </View>
             <View style={FeedbackStyles.viewBookingDate}>
-                <Text style={[FeedbackStyles.textTotalPrice, {marginRight: 5}]}>Tổng tiền:</Text>
-                <Text style={FeedbackStyles.textTotalPrice}>{party.total}</Text>
+                <Text style={[FeedbackStyles.textTotalPrice, { marginRight: 5 }]}>Tổng tiền:</Text>
+                <Text style={FeedbackStyles.textTotalPrice}>{formattedNumber(party.total)} VND</Text>
             </View>
-            <View style={MyStyles.line}/>
+            <View style={MyStyles.line} />
             <View style={FeedbackStyles.viewTextDiscription}>
                 <Text style={FeedbackStyles.textDiscription}>Chi tiết menu</Text>
             </View>
@@ -111,19 +112,18 @@ export default Feedback = ({route, navigation}) => {
                     <View key={index}>
                         <View style={FeedbackStyles.viewMenu}>
                             <Image style={FeedbackStyles.imageMenu}
-                                source={{ uri: item.menu_name.img }} />
+                                source={{ uri: item.img }} />
                             <Text style={FeedbackStyles.textNameMenu}>{item.menu_name}</Text>
-                            <Text style={FeedbackStyles.textPriceMenu}>{item.unit_price * item.quantity}</Text>
-                        </View>
-                        <View style={FeedbackStyles.viewQuantity}>
-                            <Text style={[FeedbackStyles.textNameMenu, { marginRight: 5 }]}>Số lượng:</Text>
-                            <Text style={FeedbackStyles.textNameMenu}>{item.quantity}</Text>
+                            <Text style={FeedbackStyles.textPriceMenu}>{formattedNumber(parseFloat(item.unit_price))} VND</Text>
                         </View>
                     </View>
                 ))
             }
+            <View style={FeedbackStyles.viewQuantity}>
+                <Text style={[FeedbackStyles.textNameMenu, { marginRight: 5 }]}>Số lượng:</Text>
+                <Text style={FeedbackStyles.textNameMenu}>{party.menu_items[0].quantity}</Text>
+            </View>
 
-            
             <View style={MyStyles.line} />
             <View style={FeedbackStyles.viewTextDiscription}>
                 <Text style={FeedbackStyles.textDiscription}>Chi tiết dịch vụ</Text>
@@ -134,11 +134,11 @@ export default Feedback = ({route, navigation}) => {
                 party.service_items.map((item, index) => (
                     <View style={FeedbackStyles.viewService} key={index}>
                         <Text style={FeedbackStyles.textNameService}>{item.service_name}</Text>
-                        <Text style={FeedbackStyles.textPriceService}>{item.unit_price}</Text>
+                        <Text style={FeedbackStyles.textPriceService}>{formattedNumber(parseFloat(item.unit_price))} VND</Text>
                     </View>
                 ))
             }
-            <View style={MyStyles.line}/>
+            <View style={MyStyles.line} />
             <View style={FeedbackStyles.viewTextDiscription}>
                 <Text style={FeedbackStyles.textDiscription}>Đánh giá của khách hàng</Text>
             </View>
