@@ -38,7 +38,7 @@ export default History = ({navigation}) => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
 
-            {parties.length === 0 && <Text>CHưa có lịch sử đặt</Text>}
+            {parties.length === 0 && <Text style={{'marginTop': 8, 'marginLeft': 8}}>CHưa có lịch sử đặt</Text>}
             {
                 parties.map(item => (
                     <View style={HistoryStyles.cardHistory} key={item.id}>
