@@ -8,7 +8,7 @@ export default StyleSheet.create({
         marginTop: 10,
         marginHorizontal: 10,
         backgroundColor: '#98fb98',
-        borderRadius: 10
+        borderRadius: 10,
     },
     cardHistory:{
         marginTop: 10,
