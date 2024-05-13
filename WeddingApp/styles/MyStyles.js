@@ -28,4 +28,17 @@ export default StyleSheet.create({
         borderBottomWidth: 1,
         marginHorizontal: 10
     },
+    buttonSearch:{
+        marginTop: 10,
+        marginHorizontal: screenWidth * 0.3,
+        backgroundColor: 'rgba(0, 0, 255, 0.6)',
+        borderRadius: 8,
+        alignItems: 'center',
+        padding: 8
+    },
+    textSearch:{
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: 'white'
+    }
 });
