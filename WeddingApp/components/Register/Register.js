@@ -1,4 +1,4 @@
-import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
+import { Alert, ScrollView, Text, TextInput, ToastAndroid, TouchableOpacity, View } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import RegisterStyles from "./RegisterStyles";
 import { useState } from "react";
@@ -17,10 +17,11 @@ export default Register = ({ navigation }) => {
         'username': '',
         'password': ''
     })
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [avatar, setAvatar] = useState(null)
-    const [loading, setLoading] = useState(false)
-    const [fileName, setFileName] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [avatar, setAvatar] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [fileName, setFileName] = useState('');
+    const emailRegex = /\S+@\S+\.\S+/;
 
 
     // function
@@ -48,11 +49,51 @@ export default Register = ({ navigation }) => {
     }
 
     const register = async () => {
-        if (confirmPassword !== user['password']) {
-            Alert.alert('Mật khẩu và xác nhận mật khẩu không hợp lệ')
-            return
+        if (user['first_name'] === '' || user['last_name'] === '') {
+            ToastAndroid.showWithGravity(
+                'Hãy nhập Tên, Họ và Tên Đệm',
+                ToastAndroid.SHORT,
+                ToastAndroid.TOP
+            );
+            return;
+        }
+        else if (!emailRegex.test(user['email'])) {
+            ToastAndroid.showWithGravity(
+                'Định dạng email không hợp lệ',
+                ToastAndroid.SHORT,
+                ToastAndroid.TOP
+            );
+            return;
+        }
+        else if (user['username'] === '') {
+            ToastAndroid.showWithGravity(
+                'Hãy nhập Tên đăng nhập',
+                ToastAndroid.SHORT,
+                ToastAndroid.TOP
+            );
+            return;
+        }
+        else if (user['password'] === '') {
+            ToastAndroid.showWithGravity(
+                'Hãy nhập mật khẩu',
+                ToastAndroid.SHORT,
+                ToastAndroid.TOP
+            );
+            return;
+        }
+        else if (confirmPassword !== user['password']) {
+            ToastAndroid.showWithGravity(
+                'Mật khẩu nhập lại không trùng khớp',
+                ToastAndroid.SHORT,
+                ToastAndroid.TOP
+            );
+            return;
         } else if (avatar === null) {
-            Alert.alert('Chọn ảnh đại diện')
+            ToastAndroid.showWithGravity(
+                'Hãy chọn ảnh đại diện',
+                ToastAndroid.SHORT,
+                ToastAndroid.TOP
+            );
             return;
         }
         let formData = new FormData()
@@ -62,21 +103,21 @@ export default Register = ({ navigation }) => {
         let formAvatar = processImagePicker(avatar)
         formData.append('avatar', formAvatar)
 
-       try {
-        setLoading(true)
-        let res = await API.post(Endpoints['user']['register'], formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-        Alert.alert('Đăng Ký thành công.')
-        navigation.navigate('Login')
-       } catch(ex) {
-        Alert.alert('Có lỗi xảy ra. Vui Lòng thử lại')
-        console.info(ex.response.data)
-       } finally {
-        setLoading(false)
-       }
+        try {
+            setLoading(true)
+            let res = await API.post(Endpoints['user']['register'], formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            Alert.alert('Kết quả đăng ký', 'Đăng Ký tài khoản thành công')
+            navigation.navigate('Login')
+        } catch (ex) {
+            Alert.alert('Kết quả đăng ký', 'Có lỗi xảy ra. Vui Lòng thử lại')
+            console.info(ex.response.data)
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -106,7 +147,7 @@ export default Register = ({ navigation }) => {
                     <View style={RegisterStyles.viewInput}>
                         <Ionicons name="mail-outline" size={24} color='#1e90ff' style={{ marginRight: 10 }} />
                         <TextInput
-                        inputMode="email"
+                            inputMode="email"
                             placeholder="Email"
                             style={RegisterStyles.textInput}
                             onChangeText={evt => changeValue('email', evt)}
@@ -153,8 +194,9 @@ export default Register = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity style={RegisterStyles.loginBtn} onPress={register}>
-                    {loading && <ActivityIndicator />}
-                    <Text style={RegisterStyles.textBtn}>Đăng Ký</Text>
+                    {loading ? <ActivityIndicator /> :
+                        <Text style={RegisterStyles.textBtn}>Đăng Ký</Text>
+                    }
                 </TouchableOpacity>
             </View>
         </ScrollView>

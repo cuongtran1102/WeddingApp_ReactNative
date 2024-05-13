@@ -10,7 +10,8 @@ export const processImagePicker = (image) => {
     }
 }
 
-export const formattedNumber = (number) => number.toLocaleString('de-DE', {
-    minimumFractionDigits: 2,  // Số chữ số thập phân tối thiểu
-    maximumFractionDigits: 2   // Số chữ số thập phân tối đa
-});
+export const formattedNumber = (number) => {
+    // Làm tròn số xuống để loại bỏ phần thập phân
+    const roundedNumber = Math.floor(number);
+    return roundedNumber.toLocaleString('de-DE');
+};

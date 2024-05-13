@@ -34,8 +34,8 @@ export default StyleSheet.create({
         justifyContent: 'space-between'
     },
     imageMenu:{
-        width: 50,
-        height: 40,
+        width: 40,
+        height: 35,
         borderRadius: 10,
 
     },
