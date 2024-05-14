@@ -55,7 +55,7 @@ export default CancelParty = () => {
                 parties.map(item => (
                     <View style={HistoryStyles.cardHistory} key={item.id}>
                 <Image
-                    source={{ uri: item.wedding_party.wedding_hall.img }}
+                    source={{ uri: item.wedding_hall.img }}
                     style={HistoryStyles.cardImage} />
                 <View style={HistoryStyles.cardContent}>
                     <Text style={HistoryStyles.cardTitle}>{item.wedding_hall.name}</Text>
