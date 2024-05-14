@@ -1,4 +1,4 @@
-import { ImageBackground, View, Text, SafeAreaView, TouchableOpacity, ScrollView, Image, ActivityIndicator, Alert, LogBox } from "react-native";
+import { ImageBackground, View, Text, SafeAreaView, TouchableOpacity, ScrollView, Image, ActivityIndicator, Alert, LogBox, KeyboardAvoidingView, NativeModules, NativeEventEmitter, Linking } from "react-native";
 import BookingDetailStyles from "./BookingDetailStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -12,6 +12,25 @@ import { SHIFT } from "../../configs/Enum";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { formattedNumber } from "../../configs/Utils";
+import CryptoJS from 'crypto-js';
+
+
+// Zalo pay
+
+const { PayZaloBridge } = NativeModules;
+
+const payZaloBridgeEmitter = new NativeEventEmitter(PayZaloBridge);
+
+const subscription = payZaloBridgeEmitter.addListener(
+  'EventPayZalo',
+  (data) => {
+    if (data.returnCode == 1) {
+      Alert.alert('Pay Success')
+    } else {
+      Alert.alert('pay error')
+    }
+  }
+);
 
 const data = [
     { label: 'Sáng', value: SHIFT['MORNING'] },
@@ -57,6 +76,89 @@ export default BookingDetail = ({route, navigation}) => {
     const [counterValue, setCounterValue] = useState(1); //Số lượng Menu
     const [feedbacks, setFeedbacks] = useState(null)
     const [loadingTotal, setLoadingTotal] = useState(null)
+
+    // Zalopay
+    // const [link, setLink] = useState('')
+    const [token, setToken] = useState('')
+    const [returncode, setReturnCode] = useState('')
+    const [order, setOrder] = useState(null)
+    const [linked, setLink] = useState('')
+    const [resJson, setResJson] = useState(null)
+    const [mac, setMac] = useState(null)
+
+
+    function getCurrentDateYYMMDD() {
+        var todayDate = new Date().toISOString().slice(2, 10);
+        return todayDate.split('-').join('');
+      }
+
+
+    async function createOrder() {
+        console.log(unitPrice)
+        let apptransid = getCurrentDateYYMMDD() + '_' + new Date().getTime()
+
+        let appid = 2553
+        let amount = parseInt(unitPrice.replace(/\./g, ''))
+        let appuser = "0858038081"
+        let apptime = (new Date).getTime()
+        let embeddata = "{}"
+        let item = "[]"
+        let description = "Thanh toán đơn hàng đặt tiệc #" + apptransid
+        let hmacInput = appid + "|" + apptransid + "|" + appuser + "|" + amount + "|" + apptime + "|" + embeddata + "|" + item
+        let mac = CryptoJS.HmacSHA256(hmacInput, "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL")
+        console.log('====================================');
+        console.log("hmacInput: " + hmacInput);
+        console.log("mac: " + mac)
+        console.log('====================================');
+        var order = {
+            'app_id': appid,
+            'app_user': appuser,
+            'app_time': apptime,
+            'amount': amount,
+            'app_trans_id': apptransid,
+            'embed_data': embeddata,
+            'item': item,
+            'description': description,
+            'mac': mac
+
+        }
+
+        setMac(order['mac'])
+
+        console.log(order)
+
+        let formBody = []
+        for (let i in order) {
+            var encodedKey = encodeURIComponent(i);
+            var encodedValue = encodeURIComponent(order[i]);
+            // formBody.append(encodedKey, encodedValue)
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+        setOrder(order)
+        console.log(formBody)
+        fetch('https://sb-openapi.zalopay.vn/v2/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+            },
+            body: formBody
+        }).then(response => response.json())
+            .then(resJson => {
+                console.log('test start')
+                console.log(resJson.order_url)
+                setToken(resJson.zp_trans_token)
+                setReturnCode(resJson.return_code)
+                setLink(resJson.order_url)
+                console.log(resJson)
+                setResJson(resJson)
+                console.log(link)
+            })
+            .catch((error) => {
+                console.log("error ", error)
+            })
+        console.log('test end')
+    }
 
     // function
     const handleCounterChange = (number) => {
@@ -128,11 +230,9 @@ export default BookingDetail = ({route, navigation}) => {
 
         let totalMenu = menuSelected.reduce((total, current) => total + parseFloat(current.unit_price) * counterValue, 0)
         let totalService = serviceSelected.reduce((total, current) => total + parseFloat(current.unit_price), 0)
-        console.log('total')
-        // console.log(u)
         setUnitPrice(formattedNumber(totalMenu + totalService + parseFloat(getUnitPrice(value))))
-        console.log(unitPrice)
         setLoadingTotal(false)
+        
     }
 
 
@@ -186,6 +286,10 @@ export default BookingDetail = ({route, navigation}) => {
             } catch (ex) {
                 console.log(ex)
             }
+            setSelectedMenu([])
+            setSelectedService([])
+            setUnitPrice(0)
+            setCounterValue(1) 
         }
 
         const loadFeedbacks = async () => {
@@ -200,7 +304,12 @@ export default BookingDetail = ({route, navigation}) => {
 
         loadData()
         loadFeedbacks()
-    }, [weddingHall])
+
+        if (returncode === 1) {
+            // Linking.openURL(link)
+            Alert.alert('Đặt tiệc thành công vui lòng thanh toán cho zalopay')
+        }
+    }, [weddingHall, returncode])
 
     if (menuItems === null || serviceItems === null) return <ActivityIndicator />
 
@@ -373,7 +482,7 @@ export default BookingDetail = ({route, navigation}) => {
                 <View style={BookingDetailStyles.line} />
                 {
                     loading ? <ActivityIndicator /> :
-                        <TouchableOpacity style={BookingDetailStyles.btnBookingParty} onPress={submit}>
+                        <TouchableOpacity style={BookingDetailStyles.btnBookingParty} onPress={/*submit*/ createOrder}>
                             <Text style={{ fontSize: 15, fontWeight: 'bold', color: '#000080' }}>Đặt Tiệc</Text>
                         </TouchableOpacity>
                 }

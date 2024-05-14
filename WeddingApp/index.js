@@ -6,5 +6,6 @@ import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import BookingDetail from './components/Home/BookingDetail';
 import EditProfile from './components/EditProfile/EditProfile';
+import Demo from './components/demopay/Demo';
 
 registerRootComponent(App);

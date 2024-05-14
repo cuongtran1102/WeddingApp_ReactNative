@@ -3,6 +3,7 @@ package com.anonymous.WeddingApp
 import android.app.Application
 import android.content.res.Configuration
 import androidx.annotation.NonNull
+import com.demopay.zpsdk.PayZaloBridge
 
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
@@ -18,17 +19,25 @@ import com.facebook.soloader.SoLoader
 
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ReactNativeHostWrapper
+import vn.zalopay.sdk.Environment
+import vn.zalopay.sdk.ZaloPaySDK
 
 class MainApplication : Application(), ReactApplication {
 
   override val reactNativeHost: ReactNativeHost = ReactNativeHostWrapper(
         this,
         object : DefaultReactNativeHost(this) {
-          override fun getPackages(): List<ReactPackage> {
-            // Packages that cannot be autolinked yet can be added manually here, for example:
-            // packages.add(new MyReactNativePackage());
-            return PackageList(this).packages
-          }
+            override fun getPackages(): List<ReactPackage> {
+                // Packages that cannot be autolinked yet can be added manually here, for example:
+                // packages.add(new MyReactNativePackage());
+//              return Arr
+//            return PackageList(this).packages
+                return listOf(
+                        PackageList(this).packages,
+                        // Other ReactPackage instances
+                        PayZaloBridge() // Add your custom ReactPackage here
+                )
+            }
 
           override fun getJSMainModuleName(): String = ".expo/.virtual-metro-entry"
 
@@ -42,21 +51,22 @@ class MainApplication : Application(), ReactApplication {
   override val reactHost: ReactHost
     get() = getDefaultReactHost(this.applicationContext, reactNativeHost)
 
-  override fun onCreate() {
-    super.onCreate()
-    SoLoader.init(this, false)
-    if (!BuildConfig.REACT_NATIVE_UNSTABLE_USE_RUNTIME_SCHEDULER_ALWAYS) {
-      ReactFeatureFlags.unstable_useRuntimeSchedulerAlways = false
+    override fun onCreate() {
+        super.onCreate()
+        SoLoader.init(this, false)
+        if (!BuildConfig.REACT_NATIVE_UNSTABLE_USE_RUNTIME_SCHEDULER_ALWAYS) {
+            ReactFeatureFlags.unstable_useRuntimeSchedulerAlways = false
+        }
+        if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
+            // If you opted-in for the New Architecture, we load the native entry point for this app.
+            load()
+        }
+        if (BuildConfig.DEBUG) {
+            ReactNativeFlipper.initializeFlipper(this, reactNativeHost.reactInstanceManager)
+        }
+        ApplicationLifecycleDispatcher.onApplicationCreate(this)
+        ZaloPaySDK.init(2553, Environment.SANDBOX)
     }
-    if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
-      // If you opted-in for the New Architecture, we load the native entry point for this app.
-      load()
-    }
-    if (BuildConfig.DEBUG) {
-      ReactNativeFlipper.initializeFlipper(this, reactNativeHost.reactInstanceManager)
-    }
-    ApplicationLifecycleDispatcher.onApplicationCreate(this)
-  }
 
   override fun onConfigurationChanged(newConfig: Configuration) {
     super.onConfigurationChanged(newConfig)
