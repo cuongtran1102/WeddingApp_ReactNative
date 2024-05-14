@@ -19,13 +19,11 @@ export default RejectedParty = () => {
     const loadListCancles = async() => {
         let token = await AsyncStorage.getItem('token')
 
-        try {
-            let {data} = await AuthAPI(token).get(Endpoints['cancle']['list'])
-            console.log('rejected')
-            console.log(data)
-            setCancles(data)
-            console.log(cancles.length)
-        setCancles(data)
+            try {
+                let {data} = await AuthAPI(token).get(Endpoints['cancle']['list'])
+                console.log('rejected')
+                console.log(data)
+                setCancles(data)
         } catch(ex) {
             console.log(ex)
         }
@@ -35,7 +33,6 @@ export default RejectedParty = () => {
     }, [])
 
     if (cancles === null) return <ActivityIndicator />
-    if (cancles.length === 0) return <View style={HistoryStyles.viewHistoryText}><Text style={HistoryStyles.historyText}>Lịch sử hủy trống</Text></View>
 
 
     return(

@@ -76,14 +76,16 @@ export default BookingDetail = ({ route, navigation }) => {
     const [counterValue, setCounterValue] = useState(1); //Số lượng Menu
     const [feedbacks, setFeedbacks] = useState(null)
     const [loadingTotal, setLoadingTotal] = useState(null)
+    const [loadingOrder, setLoadingOrder] = useState(false)
 
     // Zalopay
     // const [link, setLink] = useState('')
     const [token, setToken] = useState('')
     const [returncode, setReturnCode] = useState('')
     const [order, setOrder] = useState(null)
-    const [linked, setLink] = useState('')
-    const [resJson, setResJson] = useState(null)
+    // const [linked, setLink] = useState('')
+    const [url, setUrl] = useState('test')
+    const [responseJson, setResponseJson] = useState(null)
     const [mac, setMac] = useState(null)
 
 
@@ -94,7 +96,7 @@ export default BookingDetail = ({ route, navigation }) => {
 
 
     async function createOrder() {
-        console.log(unitPrice)
+        setLoadingOrder(true)
         let apptransid = getCurrentDateYYMMDD() + '_' + new Date().getTime()
 
         let appid = 2553
@@ -106,10 +108,10 @@ export default BookingDetail = ({ route, navigation }) => {
         let description = "Thanh toán đơn hàng đặt tiệc #" + apptransid
         let hmacInput = appid + "|" + apptransid + "|" + appuser + "|" + amount + "|" + apptime + "|" + embeddata + "|" + item
         let mac = CryptoJS.HmacSHA256(hmacInput, "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL")
-        console.log('====================================');
-        console.log("hmacInput: " + hmacInput);
-        console.log("mac: " + mac)
-        console.log('====================================');
+        // console.log('====================================');
+        // console.log("hmacInput: " + hmacInput);
+        // console.log("mac: " + mac)
+        // console.log('====================================');
         var order = {
             'app_id': appid,
             'app_user': appuser,
@@ -125,39 +127,34 @@ export default BookingDetail = ({ route, navigation }) => {
 
         setMac(order['mac'])
 
-        console.log(order)
+        // console.log(order)
 
         let formBody = []
         for (let i in order) {
             var encodedKey = encodeURIComponent(i);
             var encodedValue = encodeURIComponent(order[i]);
-            // formBody.append(encodedKey, encodedValue)
             formBody.push(encodedKey + "=" + encodedValue);
         }
         formBody = formBody.join("&");
         setOrder(order)
         console.log(formBody)
-        fetch('https://sb-openapi.zalopay.vn/v2/create', {
+        await fetch('https://sb-openapi.zalopay.vn/v2/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
             },
             body: formBody
         }).then(response => response.json())
-            .then(resJson => {
-                console.log('test start')
-                console.log(resJson.order_url)
-                setToken(resJson.zp_trans_token)
-                setReturnCode(resJson.return_code)
-                setLink(resJson.order_url)
-                console.log(resJson)
-                setResJson(resJson)
-                console.log(link)
+            .then(res => {
+                setToken(res.zp_trans_token)
+                setReturnCode(res.return_code)
+                setResponseJson(res)
+                // console.log(res.order_url)
             })
             .catch((error) => {
                 console.log("error ", error)
             })
-        console.log('test end')
+        setLoadingOrder(false)
     }
 
     // function
@@ -269,10 +266,11 @@ export default BookingDetail = ({ route, navigation }) => {
                 }
                 console.log(value)
                 let res = await AuthAPI(token).post(Endpoints['party']['add'], data)
-                Alert.alert('Kết quả đặt tiệc', 'Đặt tiệc thành công')
-            } catch (ex) {
-                Alert.alert("Kết quả đặt tiệc", "Đặt tiệc thất bại");
-                console.log(ex);
+                console.log('Đặt tiệc thành công')
+                // Alert.alert('Đặt Tiệc Thành Công')
+            } catch(ex) {
+                console.log('Có lỗi xảy ra. Vui lòng thử lại')
+                console.log(ex)
             }
 
         } catch (ex) {
@@ -315,10 +313,20 @@ export default BookingDetail = ({ route, navigation }) => {
         loadFeedbacks()
 
         if (returncode === 1) {
-            // Linking.openURL(link)
+            // Linking.openURL(responseJson.order_url)
+            submit()
             Alert.alert('Đặt tiệc thành công vui lòng thanh toán cho zalopay')
         }
+        if (responseJson !== null) {
+            Linking.openURL(responseJson.order_url)
+        }
     }, [weddingHall, returncode])
+
+    useEffect(() => {
+        if (responseJson !== null) {
+            Linking.openURL(responseJson.order_url)
+        }
+    }, [responseJson])
 
     if (menuItems === null || serviceItems === null) return <ActivityIndicator />
 
@@ -498,7 +506,7 @@ export default BookingDetail = ({ route, navigation }) => {
                 </View>
                 <View style={BookingDetailStyles.line} />
                 {
-                    loading ? <ActivityIndicator /> :
+                    loadingOrder ? <ActivityIndicator /> :
                         <TouchableOpacity style={BookingDetailStyles.btnBookingParty} onPress={/*submit*/ createOrder}>
                             <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'white' }}>Đặt Tiệc</Text>
                         </TouchableOpacity>
