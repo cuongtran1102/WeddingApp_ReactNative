@@ -4,6 +4,7 @@ import HistoryStyles from "./HistoryStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthAPI, Endpoints } from "../../configs/API";
 import { Status } from "../../configs/Enum";
+import { formattedNumber } from "../../configs/Utils";
 
 export default History = ({navigation}) => {
     const [refreshing, setRefreshing] = useState(false);
@@ -50,12 +51,12 @@ export default History = ({navigation}) => {
                             <Text style={HistoryStyles.cardTitle}>{item.wedding_hall.name}</Text>
                             <Text style={HistoryStyles.bookingDate}>Ngày đặt tiệc: {item.created_date}</Text>
                             <Text style={HistoryStyles.bookingDate}>Ngày tổ chức: {item.order_date}</Text>
-                            <Text style={HistoryStyles.cardPrice}>Tổng chi phí: {item.total} VND</Text>
+                            <Text style={HistoryStyles.cardPrice}>Tổng chi phí: {formattedNumber(item.total)} VND</Text>
                         </View>
                         <TouchableOpacity style={HistoryStyles.buttonFeedBack} onPress={() => navigation.navigate('Feedback', {
                             'partyId': item.id
                         })}>
-                            <Text style={HistoryStyles.buttonText}>Đánh giá chất lượng dịch vụ {item.id} </Text>
+                            <Text style={HistoryStyles.buttonText}>Đánh giá chất lượng dịch vụ</Text>
                         </TouchableOpacity>
                     </View>
                 ))

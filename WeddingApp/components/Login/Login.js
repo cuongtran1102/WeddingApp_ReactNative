@@ -35,7 +35,7 @@ export default Login = ({navigation}) =>{
             navigation.navigate('Home')
         }
         catch(ex){
-            Alert.alert('Sai tai khoan hoac mat khau')
+            Alert.alert('Kết quả đăng nhập', 'Sai tên tài khoản hoặc mật khẩu')
         } finally {
             setLoading(false)
         }

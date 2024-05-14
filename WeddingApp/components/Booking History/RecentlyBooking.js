@@ -37,7 +37,7 @@ export default RecentlyBooking = () => {
         <ScrollView refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-            {parties.length === 0 && <Text style={{'marginTop': 8, 'marginLeft': 8}}>CHưa có lịch sử đặt</Text>}
+            {parties.length === 0 && <View style={HistoryStyles.viewHistoryText}><Text style={HistoryStyles.historyText}>Danh sách đặt tiệc trống</Text></View>}
             
             {
 
