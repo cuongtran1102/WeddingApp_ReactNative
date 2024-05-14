@@ -11,6 +11,7 @@ import API, { AuthAPI, Endpoints } from "../../configs/API";
 import { SHIFT } from "../../configs/Enum";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+import { formattedNumber } from "../../configs/Utils";
 
 const data = [
     { label: 'Sáng', value: SHIFT['MORNING'] },
@@ -54,6 +55,8 @@ export default BookingDetail = ({route, navigation}) => {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [counterValue, setCounterValue] = useState(1); //Số lượng Menu
+    const [feedbacks, setFeedbacks] = useState(null)
+    const [loadingTotal, setLoadingTotal] = useState(null)
 
     // function
     const handleCounterChange = (number) => {
@@ -118,6 +121,20 @@ export default BookingDetail = ({route, navigation}) => {
         }
     }
 
+    const getTotal = async() => {
+        setLoadingTotal(true)
+        let menuSelected = await fetchApiMenuDetail(counterValue)
+        let serviceSelected = await fetchApiServiceDetail()
+
+        let totalMenu = menuSelected.reduce((total, current) => total + parseFloat(current.unit_price) * counterValue, 0)
+        let totalService = serviceSelected.reduce((total, current) => total + parseFloat(current.unit_price), 0)
+        console.log('total')
+        // console.log(u)
+        setUnitPrice(formattedNumber(totalMenu + totalService + parseFloat(getUnitPrice(value))))
+        console.log(unitPrice)
+        setLoadingTotal(false)
+    }
+
 
     const isWeekend = (date) => {
         return date.getDay() === 0
@@ -171,8 +188,19 @@ export default BookingDetail = ({route, navigation}) => {
             }
         }
 
+        const loadFeedbacks = async () => {
+            try {
+                let token = await AsyncStorage.getItem('token')
+                let {data} = await AuthAPI(token).get(`${Endpoints['feedback']['hall']}?hall=${weddingHall.id}`)
+                setFeedbacks(data)
+            } catch(ex) {
+                console.log(ex)
+            }
+        }
+
         loadData()
-    }, [])
+        loadFeedbacks()
+    }, [weddingHall])
 
     if (menuItems === null || serviceItems === null) return <ActivityIndicator />
 
@@ -335,6 +363,13 @@ export default BookingDetail = ({route, navigation}) => {
                         )}
                     />
                 </View>
+                <TouchableOpacity onPress={() => getTotal()}>
+                    <Text>Tổng tiền</Text>
+                    {
+                        loadingTotal && <ActivityIndicator />
+                    }
+                </TouchableOpacity>
+                <Text>{unitPrice}</Text>
                 <View style={BookingDetailStyles.line} />
                 {
                     loading ? <ActivityIndicator /> :
@@ -346,15 +381,20 @@ export default BookingDetail = ({route, navigation}) => {
                 <Text style={BookingDetailStyles.txtConfirm}>Đánh Giá</Text>
 
                 {/* Comments View */}
-                <View style={BookingDetailStyles.viewComment}>
-                    <View style={BookingDetailStyles.viewInforUser}>
-                        <Image source={{uri: 'https://res.cloudinary.com/dvevyvqyt/pkw5fui4795zazpplp2p'}} 
-                        style={BookingDetailStyles.avatarUser}/>
-                        <Text style={BookingDetailStyles.textNameUser}>Cương Trần</Text>
-                    </View>
-                    <Text style={BookingDetailStyles.textComment}>Quá tệ, đề nghị mọi người đừng đặt chỗ này!!! shshsdh snnsns
-                    snsnss msmmllslsl nnnncncncn sjdjjdjdj snnsnsn</Text>
-                </View>
+                {
+                    feedbacks === null ? <ActivityIndicator /> :
+
+                        feedbacks.map(item => (
+                            <View style={BookingDetailStyles.viewComment}>
+                            <View style={BookingDetailStyles.viewInforUser}>
+                                <Image source={{ uri: item.user.avatar }}
+                                    style={BookingDetailStyles.avatarUser} />
+                                <Text style={BookingDetailStyles.textNameUser}>{item.user.first_name} {item.user.last_name}</Text>
+                            </View>
+                            <Text style={BookingDetailStyles.textComment}>{item.content}</Text>
+                        </View>
+                        ))
+                }
             </View>
         </ScrollView>
     );
