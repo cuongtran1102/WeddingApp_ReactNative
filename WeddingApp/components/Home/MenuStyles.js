@@ -27,7 +27,7 @@ export default StyleSheet.create({
         fontWeight: 'bold'
     },
     selectedPriceStyle:{
-        fontSize: 14,
+        fontSize: 12,
         color: '#ff0000'
     },
     iconStyle: {

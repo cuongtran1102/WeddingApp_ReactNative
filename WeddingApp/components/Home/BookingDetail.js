@@ -1,4 +1,4 @@
-import { ImageBackground, View, Text, SafeAreaView, TouchableOpacity, ScrollView, Image, ActivityIndicator, Alert, LogBox } from "react-native";
+import { ImageBackground, View, Text, SafeAreaView, TouchableOpacity, ScrollView, Image, ActivityIndicator, Alert, LogBox, ToastAndroid } from "react-native";
 import BookingDetailStyles from "./BookingDetailStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -23,7 +23,7 @@ const renderMenuItem = item => {
     return (
         <View style={MenuStyles.item}>
             <Text style={MenuStyles.selectedTextStyle}>{item.name}</Text>
-            <Text style={MenuStyles.selectedPriceStyle}>{item.unit_price}</Text>
+            <Text style={MenuStyles.selectedPriceStyle}>{formattedNumber(item.unit_price)} VND</Text>
             <Image source={{ uri: item.url }} style={{ width: 40, height: 40, borderRadius: 15, marginRight: 5 }} />
         </View>
     );
@@ -33,13 +33,12 @@ const renderServiceItem = item => {
     return (
         <View style={MenuStyles.item}>
             <Text style={MenuStyles.selectedTextStyle}>{item.name}</Text>
-            <Text style={MenuStyles.selectedPriceStyle}>{item.unit_price}</Text>
-            {/* <Image source={{ uri: item.image }} style={{ width: 40, height: 40, borderRadius: 15, marginRight: 5 }} /> */}
+            <Text style={MenuStyles.selectedPriceStyle}>{formattedNumber(item.unit_price)} VND</Text>
         </View>
     );
 };
 
-export default BookingDetail = ({route, navigation}) => {
+export default BookingDetail = ({ route, navigation }) => {
     LogBox.ignoreAllLogs()
 
     // Use State
@@ -112,16 +111,16 @@ export default BookingDetail = ({route, navigation}) => {
 
     const getUnitPrice = (shift) => {
         switch (shift) {
-            case SHIFT['MORNING']:
-                return weddingHall.price_morning
             case SHIFT['AFTERNOON']:
                 return weddingHall.price_afternoon
-            default:
+            case SHIFT['EVENING']:
                 return weddingHall.price_evening
+            default:
+                return weddingHall.price_morning
         }
     }
 
-    const getTotal = async() => {
+    const getTotal = async () => {
         setLoadingTotal(true)
         let menuSelected = await fetchApiMenuDetail(counterValue)
         let serviceSelected = await fetchApiServiceDetail()
@@ -129,7 +128,6 @@ export default BookingDetail = ({route, navigation}) => {
         let totalMenu = menuSelected.reduce((total, current) => total + parseFloat(current.unit_price) * counterValue, 0)
         let totalService = serviceSelected.reduce((total, current) => total + parseFloat(current.unit_price), 0)
         console.log('total')
-        // console.log(u)
         setUnitPrice(formattedNumber(totalMenu + totalService + parseFloat(getUnitPrice(value))))
         console.log(unitPrice)
         setLoadingTotal(false)
@@ -159,13 +157,22 @@ export default BookingDetail = ({route, navigation}) => {
             }
 
             try {
+                if (value === null) {
+                    ToastAndroid.showWithGravity(
+                        'Hãy chọn buổi tổ chức tiệc',
+                        ToastAndroid.SHORT,
+                        ToastAndroid.TOP
+                    );
+                    return;
+                }
+                console.log(value)
                 let res = await AuthAPI(token).post(Endpoints['party']['add'], data)
-                Alert.alert('Đặt Tiệc Thành Công')
-            } catch(ex) {
-                console.log('Có lỗi xảy ra. Vui lòng thử lại')
-                console.log(ex)
+                Alert.alert('Kết quả đặt tiệc', 'Đặt tiệc thành công')
+            } catch (ex) {
+                Alert.alert("Kết quả đặt tiệc", "Đặt tiệc thất bại");
+                console.log(ex);
             }
-            
+
         } catch (ex) {
             console.log(ex)
         } finally {
@@ -186,14 +193,18 @@ export default BookingDetail = ({route, navigation}) => {
             } catch (ex) {
                 console.log(ex)
             }
+            setSelectedMenu([])
+            setSelectedService([])
+            setUnitPrice(0)
+            setCounterValue(1)
         }
 
         const loadFeedbacks = async () => {
             try {
                 let token = await AsyncStorage.getItem('token')
-                let {data} = await AuthAPI(token).get(`${Endpoints['feedback']['hall']}?hall=${weddingHall.id}`)
+                let { data } = await AuthAPI(token).get(`${Endpoints['feedback']['hall']}?hall=${weddingHall.id}`)
                 setFeedbacks(data)
-            } catch(ex) {
+            } catch (ex) {
                 console.log(ex)
             }
         }
@@ -206,14 +217,17 @@ export default BookingDetail = ({route, navigation}) => {
 
     return (
         <ScrollView>
-            <ImageBackground style={BookingDetailStyles.imageStyle} source={{ uri:  weddingHall.img}}>
+            <ImageBackground style={BookingDetailStyles.imageStyle} source={{ uri: weddingHall.img }}>
                 <TouchableOpacity onPress={() => navigation.navigate('Home')} style={BookingDetailStyles.viewIcon}>
                     <Ionicons name="chevron-back-outline" size={24} color={'white'} />
                 </TouchableOpacity>
                 <View style={BookingDetailStyles.viewDiscription}>
                     <Text style={BookingDetailStyles.textTitle}>{weddingHall.name}</Text>
                     <Text style={BookingDetailStyles.textDiscription}>{weddingHall.description_text}</Text>
-                    <Text style={BookingDetailStyles.textPrice}>5.500.000 VND</Text>
+                    <Text style={BookingDetailStyles.textPrice}>{
+                        value === 'MORNING' || value === null ? formattedNumber(weddingHall.price_morning) :
+                            (value === 'AFTERNOON' ? formattedNumber(weddingHall.price_afternoon) : formattedNumber(weddingHall.price_evening))
+                    } VND</Text>
                 </View>
             </ImageBackground>
             <View style={BookingDetailStyles.line} />
@@ -355,7 +369,6 @@ export default BookingDetail = ({route, navigation}) => {
                         renderSelectedItem={(item, unSelect) => (
                             <TouchableOpacity style={{ marginHorizontal: 10 }} onPress={() => unSelect && unSelect(item)}>
                                 <View style={MenuStyles.selectedStyle}>
-                                    {/* <Image source={{ uri: item.image }} style={{ width: 40, height: 40, borderRadius: 15, marginRight: 5 }} /> */}
                                     <Text style={MenuStyles.textSelectedStyle}>{item.name}</Text>
                                     <AntDesign color="black" name="closecircle" size={17} />
                                 </View>
@@ -363,18 +376,24 @@ export default BookingDetail = ({route, navigation}) => {
                         )}
                     />
                 </View>
-                <TouchableOpacity onPress={() => getTotal()}>
-                    <Text>Tổng tiền</Text>
-                    {
-                        loadingTotal && <ActivityIndicator />
-                    }
-                </TouchableOpacity>
-                <Text>{unitPrice}</Text>
+                <View style={BookingDetailStyles.line} />
+                <View style={BookingDetailStyles.viewTotal}>
+                    <TouchableOpacity style={BookingDetailStyles.buttonTotal} onPress={() => getTotal()}>
+                        {
+                            loadingTotal ? <ActivityIndicator /> :
+                                <View style={BookingDetailStyles.contentTotal}>
+                                    <Ionicons name="eye-outline" size={22} color={'white'} />
+                                    <Text style={BookingDetailStyles.textContentTotal}>Xem tổng tiền</Text>
+                                </View>
+                        }
+                    </TouchableOpacity>
+                    <Text style={BookingDetailStyles.textTotal}>{unitPrice} VND</Text>
+                </View>
                 <View style={BookingDetailStyles.line} />
                 {
                     loading ? <ActivityIndicator /> :
                         <TouchableOpacity style={BookingDetailStyles.btnBookingParty} onPress={submit}>
-                            <Text style={{ fontSize: 15, fontWeight: 'bold', color: '#000080' }}>Đặt Tiệc</Text>
+                            <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'white' }}>Đặt Tiệc</Text>
                         </TouchableOpacity>
                 }
                 <View style={BookingDetailStyles.line} />
@@ -386,13 +405,13 @@ export default BookingDetail = ({route, navigation}) => {
 
                         feedbacks.map(item => (
                             <View style={BookingDetailStyles.viewComment}>
-                            <View style={BookingDetailStyles.viewInforUser}>
-                                <Image source={{ uri: item.user.avatar }}
-                                    style={BookingDetailStyles.avatarUser} />
-                                <Text style={BookingDetailStyles.textNameUser}>{item.user.first_name} {item.user.last_name}</Text>
+                                <View style={BookingDetailStyles.viewInforUser}>
+                                    <Image source={{ uri: item.user.avatar }}
+                                        style={BookingDetailStyles.avatarUser} />
+                                    <Text style={BookingDetailStyles.textNameUser}>{item.user.first_name} {item.user.last_name}</Text>
+                                </View>
+                                <Text style={BookingDetailStyles.textComment}>{item.content}</Text>
                             </View>
-                            <Text style={BookingDetailStyles.textComment}>{item.content}</Text>
-                        </View>
                         ))
                 }
             </View>

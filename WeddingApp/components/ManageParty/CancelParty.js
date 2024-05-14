@@ -1,6 +1,6 @@
-import { ActivityIndicator, Alert, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import HistoryStyles from "../Booking History/HistoryStyles";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AuthAPI, Endpoints } from "../../configs/API";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { formattedNumber } from "../../configs/Utils";
@@ -9,6 +9,14 @@ export default CancelParty = () => {
     const [parties, setParites] = useState(null)
     const [isChange, setIsChange] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setParites([]);
+        loadParitiesPending();
+        setRefreshing(false);
+    }, []);
 
     const changeStatus = async (status, partyId) => {
         let token = await AsyncStorage.getItem('token')
@@ -17,9 +25,9 @@ export default CancelParty = () => {
             let res = await AuthAPI(token).post(Endpoints['party']['change-status'](partyId), {
                 'status': status
             })
-            Alert.alert('Success')
+            Alert.alert('Thông báo', 'Thao tác thành công');
         } catch(ex) {
-            Alert.alert('Thất bại')
+            Alert.alert('Thông báo', 'Thao tác thất bại');
             console.log(ex)
         } finally {
             setIsChange(!isChange)
@@ -27,15 +35,14 @@ export default CancelParty = () => {
         }
     }
 
+    const loadParitiesPending = async () => {
+        let token = await AsyncStorage.getItem('token')
+        let {data} =  await AuthAPI(token).get(`${Endpoints['party']['list-history']}?status=PENDING`)
+        setParites(data)
+    }
 
     // use effect
     useEffect(() => {
-        const loadParitiesPending = async () => {
-            let token = await AsyncStorage.getItem('token')
-            let {data} =  await AuthAPI(token).get(`${Endpoints['party']['list-history']}?status=PENDING`)
-            setParites(data)
-        }
-
         loadParitiesPending()
     }, [isChange])
 
@@ -44,9 +51,12 @@ export default CancelParty = () => {
 
 
     return (
-        <ScrollView>
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             {
-                parties.length === 0 && <Text style={{'marginTop': 8, 'marginLeft': 8}}>Không có lịch chờ</Text>
+                parties.length === 0 && 
+                <View style={HistoryStyles.viewHistoryText}>
+                    <Text style={HistoryStyles.historyText}>Chưa có tiệc chờ</Text>
+                </View>
             }
             {
                 loading && <ActivityIndicator />

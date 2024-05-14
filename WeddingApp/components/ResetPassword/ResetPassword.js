@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator, ToastAndroid } from "react-native";
 import MyStyles from "../../styles/MyStyles";
 import ResetPasswordStyles from "./ResetPasswordStyles";
 import { useState } from "react";
@@ -23,17 +23,29 @@ export default ResetPassword = () => {
     }
 
     const changePwd = async () => {
-        if (changePassword['new_password'] !== confirmPassword) {
-            Alert.alert('Mật khẩu và nhập lại mật khẩu không hợp lệ')
-            return
+        if(changePassword['current_password'] === ''){
+            ToastAndroid.showWithGravity(
+                'Hãy nhập mật khẩu hiện tại',
+                ToastAndroid.SHORT,
+                ToastAndroid.TOP
+            );
+            return;
+        }
+        else if (changePassword['new_password'] !== confirmPassword) {
+            ToastAndroid.showWithGravity(
+                'Mật khẩu mới và nhập lại không trùng khớp',
+                ToastAndroid.SHORT,
+                ToastAndroid.TOP
+            );
+            return;
         }
         let token = await AsyncStorage.getItem('token')
         try {
             setLoading(true)
             let {data} = await AuthAPI(token).post(Endpoints['user']['change-password'], changePassword)
-            Alert.alert('Đổi mật khẩu thành công.')
+            Alert.alert('Thông báo', 'Đổi mật khẩu thành công.')
         } catch(ex) {
-            Alert.alert('Mật khẩu cũ không hợp lệ')
+            Alert.alert('Thông báo', 'Mật khẩu hện tại không hợp lệ')
         } finally {
             setLoading(false)
         }
