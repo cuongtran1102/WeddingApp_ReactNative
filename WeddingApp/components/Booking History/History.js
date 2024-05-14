@@ -49,8 +49,8 @@ export default History = ({navigation}) => {
                             style={HistoryStyles.cardImage} />
                         <View style={HistoryStyles.cardContent}>
                             <Text style={HistoryStyles.cardTitle}>{item.wedding_hall.name}</Text>
-                            <Text style={HistoryStyles.bookingDate}>Ngày đặt tiệc: {item.created_date}</Text>
-                            <Text style={HistoryStyles.bookingDate}>Ngày tổ chức: {item.order_date}</Text>
+                            <Text style={HistoryStyles.bookingDate}>Ngày đặt tiệc: {item.created_date.split('T')[0]}</Text>
+                            <Text style={HistoryStyles.bookingDate}>Ngày tổ chức: {item.order_date.split('T')[0]}</Text>
                             <Text style={HistoryStyles.cardPrice}>Tổng chi phí: {formattedNumber(item.total)} VND</Text>
                         </View>
                         <TouchableOpacity style={HistoryStyles.buttonFeedBack} onPress={() => navigation.navigate('Feedback', {

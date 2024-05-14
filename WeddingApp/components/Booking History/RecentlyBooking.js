@@ -12,22 +12,22 @@ export default RecentlyBooking = () => {
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        setTimeout(() => {
-            setRefreshing(false)
-        }, 2000);
+        setParties([]);
+        loadHistory();
+        setRefreshing(false);
+
     }, []);
 
-    useEffect(() => {
-        const loadHistory = async () => {
-            let token = await AsyncStorage.getItem('token')
-            try {
-                let { data } = await AuthAPI(token).get(`${Endpoints['party']['history']}?status=${Status['PENDING']}`)
-                setParties(data)
-            } catch (ex) {
-                console.log(ex)
-            }
+    const loadHistory = async () => {
+        let token = await AsyncStorage.getItem('token')
+        try {
+            let { data } = await AuthAPI(token).get(`${Endpoints['party']['history']}?status=${Status['PENDING']}`)
+            setParties(data)
+        } catch (ex) {
+            console.log(ex)
         }
-
+    }
+    useEffect(() => {
         loadHistory()
     }, [])
 

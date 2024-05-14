@@ -1,11 +1,11 @@
-import { View, Text, Image, TouchableOpacity, ScrollView, TextInput, Alert } from "react-native";
+import { View, Text, Image, TouchableOpacity, ScrollView, TextInput, Alert, ToastAndroid } from "react-native";
 import EditProfileStyles from "./EditProfileStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { useContext, useEffect, useState } from "react";
 import API, { AuthAPI, Endpoints } from "../../configs/API";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActivityIndicator } from "react-native-paper";
-import {append} from 'domutils'
+import { append } from 'domutils'
 import * as ImgPicker from 'expo-image-picker'
 import { processImagePicker } from "../../configs/Utils";
 import UserContext from "../../contexts/UserContext";
@@ -22,20 +22,21 @@ export default EditProfile = () => {
   const [loading, setLoading] = useState(false)
   const [isUpdated, setIsUpdated] = useState(false)
   const [, dispatch] = useContext(UserContext)
+  const emailRegex = /\S+@\S+\.\S+/;
 
   // function
   const changeValue = (field, value) => {
     setUser(current => {
-      return { ...current, [field]: value}
+      return { ...current, [field]: value }
     })
   }
 
-  const uploadImage = async() => {
-    let {status} = await ImgPicker.requestMediaLibraryPermissionsAsync()
+  const uploadImage = async () => {
+    let { status } = await ImgPicker.requestMediaLibraryPermissionsAsync()
 
     if (status !== 'granted') {
-        Alert.alert('Ứng dụng không có quyền truy cập')
-        return
+      Alert.alert('Ứng dụng không có quyền truy cập')
+      return
     }
 
     let result = await ImgPicker.launchImageLibraryAsync()
@@ -50,7 +51,7 @@ export default EditProfile = () => {
 
   const edit = async () => {
     let form = new FormData()
-    for(let key in user) {
+    for (let key in user) {
       form.append(key, user[key])
     }
     if (localAvatar) {
@@ -59,17 +60,32 @@ export default EditProfile = () => {
     }
     let token = await AsyncStorage.getItem('token')
     try {
+      if (user['email'] === '' || user['first_name'] === '' || user['last_name'] === '') {
+        ToastAndroid.showWithGravity(
+          'Hãy nhập đủ thông tin cần thay đổi',
+          ToastAndroid.SHORT,
+          ToastAndroid.TOP
+        );
+        return;
+      }
+      else if (!emailRegex.test(user['email'])) {
+        ToastAndroid.showWithGravity(
+          'Định dạng email không hợp lệ',
+          ToastAndroid.SHORT,
+          ToastAndroid.TOP
+        );
+        return;
+      }
       setLoading(true)
-      
       let res = await AuthAPI(token).put(Endpoints['user']['edit'], form, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       })
-      Alert.alert('Cập Nhật thành công')
+      Alert.alert('Thông báo', 'Cập nhật thông tin thành công')
       setIsUpdated(!isUpdated)
-    } catch(ex) {
-      Alert.alert('Có lỗi xảy ra')
+    } catch (ex) {
+      Alert.alert('Thông báo', 'Cập nhật thông tin thất bại')
       console.log(ex.response.data)
     } finally {
       setLoading(false)
@@ -80,7 +96,7 @@ export default EditProfile = () => {
   // useEffect
   useEffect(() => {
 
-    const loadUser = async() => {
+    const loadUser = async () => {
       let token = await AsyncStorage.getItem('token')
       let res = await AuthAPI(token).get(Endpoints['user']['current'])
       setCurrentUser(res.data)
@@ -111,9 +127,9 @@ export default EditProfile = () => {
           </TouchableOpacity>
         </View>
         <View style={EditProfileStyles.viewImg}>
-          { avatar && <Image
+          {avatar && <Image
             style={EditProfileStyles.imgAvatar}
-            source={{ uri: avatar}} />}
+            source={{ uri: avatar }} />}
         </View>
       </View>
       <View style={EditProfileStyles.line} />
@@ -144,9 +160,9 @@ export default EditProfile = () => {
           />
         </View>
       </View>
-        <TouchableOpacity style={EditProfileStyles.viewBtnSave} onPress={edit}>
-          {loading ? <ActivityIndicator /> : <Text style={EditProfileStyles.txtSave}>Lưu Thông Tin</Text>}
-        </TouchableOpacity>
+      <TouchableOpacity style={EditProfileStyles.viewBtnSave} onPress={edit}>
+        {loading ? <ActivityIndicator /> : <Text style={EditProfileStyles.txtSave}>Lưu Thông Tin</Text>}
+      </TouchableOpacity>
     </ScrollView>
   );
 }
