@@ -17,7 +17,6 @@ export default RejectedParty = () => {
                 console.log('rejected')
                 console.log(data)
                 setCancles(data)
-                console.log(cancles.length)
             setCancles(data)
             } catch(ex) {
                 console.log(ex)
@@ -28,7 +27,6 @@ export default RejectedParty = () => {
     }, [])
 
     if (cancles === null) return <ActivityIndicator />
-    if (cancles.length === 0) return <Text style={{'marginTop': 8, 'marginLeft': 8}}>Không có lịch chờ</Text>
 
 
     return(
