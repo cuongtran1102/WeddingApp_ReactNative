@@ -15,6 +15,7 @@ import Feedback from './components/Booking History/Feedback'
 import Register from './components/Register/Register';
 import BookingDetail from './components/Home/BookingDetail';
 import ManageParty from './components/ManageParty/ManageParty';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Drawer = createDrawerNavigator();
 

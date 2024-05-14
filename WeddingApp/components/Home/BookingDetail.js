@@ -43,8 +43,8 @@ export default BookingDetail = ({route}) => {
 
     // Use State
     const [value, setValue] = useState(null);
-    const [menuItems, setMenuItems] = useState(null)
-    const [serviceItems, setServiceItems] = useState(null)
+    const [menuItems, setMenuItems] = useState([])
+    const [serviceItems, setServiceItems] = useState([])
     const [selectedMenu, setSelectedMenu] = useState([]);
     const [selectedService, setSelectedService] = useState([]);
     const [unitPrice, setUnitPrice] = useState(0)
@@ -118,6 +118,14 @@ export default BookingDetail = ({route}) => {
         }
     }
 
+    const getTotal = async () => {
+        let menuSelected = await fetchApiMenuDetail(counterValue)
+        let serviceSelected = await fetchApiServiceDetail()
+        let totalMenu = menuSelected.reduce((total, current) => total + parseFloat(current.unit_price) * counterValue, 0)
+        let totalService = serviceSelected.reduce((total, current) => total + parseFloat(current.unit_price), 0)
+        setUnitPrice(parseFloat(getUnitPrice(value)) + totalMenu + totalService)
+    }
+
 
     const isWeekend = (date) => {
         return date.getDay() === 0
@@ -183,10 +191,9 @@ export default BookingDetail = ({route}) => {
                     <Ionicons name="chevron-back-outline" size={24} color={'white'} />
                 </TouchableOpacity>
                 <View style={BookingDetailStyles.viewDiscription}>
-                    <Text style={BookingDetailStyles.textTitle}>Flower Garden</Text>
-                    <Text style={BookingDetailStyles.textDiscription}>Vườn hoa với hoa đào chủ đạo
-                        mang lại cảm giác ấm áp hài hòa phù hợp với những tâm hồn hòa quyện thiên nhiên</Text>
-                    <Text style={BookingDetailStyles.textPrice}>5.500.000 VND</Text>
+                    <Text style={BookingDetailStyles.textTitle}>{weddingHall.name}</Text>
+                    <Text style={BookingDetailStyles.textDiscription}>{weddingHall.description_text}</Text>
+                    <Text style={BookingDetailStyles.textPrice}>{weddingHall.price_morning}</Text>
                 </View>
             </ImageBackground>
             <View style={BookingDetailStyles.line} />
@@ -336,6 +343,16 @@ export default BookingDetail = ({route}) => {
                         )}
                     />
                 </View>
+                <TouchableOpacity onPress={() => {
+                    getTotal()
+                }}>
+                    <Text>Tổng Tiền</Text>
+                    {
+                        unitPrice > 0 && <Text>{unitPrice}</Text>
+                    }
+                    
+                </TouchableOpacity>
+                {/* <Text>{unitPrice}</Text> */}
                 <View style={BookingDetailStyles.line} />
                 {
                     loading ? <ActivityIndicator /> :
