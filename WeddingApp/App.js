@@ -55,14 +55,14 @@ export default function App() {
                     <Ionicons name={focused ? 'time' : 'time-outline'} size={size} color={color} />
                   )
                 }} />
-              <Drawer.Screen
+              {/* <Drawer.Screen
                 name='ManageParty'
                 component={ManageParty}
                 options={{
                   title: 'Quản Lý Đặt Tiệc', drawerIcon: ({ focused, color, size }) => (
                     <Ionicons name={focused ? 'reader' : 'reader-outline'} size={size} color={color} />
                   )
-                }} />
+                }} /> */}
               <Drawer.Screen
                 name='BookingDetail'
                 component={BookingDetail}
