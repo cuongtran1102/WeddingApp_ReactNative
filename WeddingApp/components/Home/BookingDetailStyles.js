@@ -102,9 +102,9 @@ export default StyleSheet.create({
         justifyContent: 'center',
         marginTop: 10,
         marginHorizontal: 10,
-        backgroundColor: 'rgba(255, 0, 0, 0.7)',
+        backgroundColor: 'rgba(0, 0, 255, 0.7)',
         borderRadius: 8,
-        padding: 12
+        padding: 10
       },
       txtConfirm:{
         marginTop: 10,
@@ -136,9 +136,37 @@ export default StyleSheet.create({
         color: '#000080'
       },
       textComment:{
-        marginTop: 8,
+        marginTop: 5,
         fontSize: 12,
         fontWeight: 'bold',
         color: '#000080'
+      },
+      buttonTotal:{
+        alignItems: 'center',
+        padding: 8,
+        backgroundColor: 'red',
+        borderRadius: 8,
+        marginRight: 10
+      },
+      contentTotal:{
+        flexDirection: 'row'
+      },
+      viewTotal:{
+        marginHorizontal: 10,
+        marginTop: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+      },
+      textContentTotal:{
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: 'white',
+        marginLeft: 5
+      },
+      textTotal:{
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: 'red'
       }
 });
