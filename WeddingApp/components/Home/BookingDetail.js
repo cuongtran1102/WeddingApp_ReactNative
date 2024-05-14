@@ -38,13 +38,13 @@ const renderServiceItem = item => {
     );
 };
 
-export default BookingDetail = ({route}) => {
+export default BookingDetail = ({route, navigation}) => {
     LogBox.ignoreAllLogs()
 
     // Use State
     const [value, setValue] = useState(null);
-    const [menuItems, setMenuItems] = useState([])
-    const [serviceItems, setServiceItems] = useState([])
+    const [menuItems, setMenuItems] = useState(null)
+    const [serviceItems, setServiceItems] = useState(null)
     const [selectedMenu, setSelectedMenu] = useState([]);
     const [selectedService, setSelectedService] = useState([]);
     const [unitPrice, setUnitPrice] = useState(0)
@@ -118,14 +118,6 @@ export default BookingDetail = ({route}) => {
         }
     }
 
-    const getTotal = async () => {
-        let menuSelected = await fetchApiMenuDetail(counterValue)
-        let serviceSelected = await fetchApiServiceDetail()
-        let totalMenu = menuSelected.reduce((total, current) => total + parseFloat(current.unit_price) * counterValue, 0)
-        let totalService = serviceSelected.reduce((total, current) => total + parseFloat(current.unit_price), 0)
-        setUnitPrice(parseFloat(getUnitPrice(value)) + totalMenu + totalService)
-    }
-
 
     const isWeekend = (date) => {
         return date.getDay() === 0
@@ -186,14 +178,14 @@ export default BookingDetail = ({route}) => {
 
     return (
         <ScrollView>
-            <ImageBackground style={BookingDetailStyles.imageStyle} source={{ uri: 'https://callabridal.com.vn/wp-content/uploads/2023/05/cx2.jpeg' }}>
-                <TouchableOpacity onPress={() => setShowDatePicker(true)} style={BookingDetailStyles.viewIcon}>
+            <ImageBackground style={BookingDetailStyles.imageStyle} source={{ uri:  weddingHall.img}}>
+                <TouchableOpacity onPress={() => navigation.navigate('Home')} style={BookingDetailStyles.viewIcon}>
                     <Ionicons name="chevron-back-outline" size={24} color={'white'} />
                 </TouchableOpacity>
                 <View style={BookingDetailStyles.viewDiscription}>
                     <Text style={BookingDetailStyles.textTitle}>{weddingHall.name}</Text>
                     <Text style={BookingDetailStyles.textDiscription}>{weddingHall.description_text}</Text>
-                    <Text style={BookingDetailStyles.textPrice}>{weddingHall.price_morning}</Text>
+                    <Text style={BookingDetailStyles.textPrice}>5.500.000 VND</Text>
                 </View>
             </ImageBackground>
             <View style={BookingDetailStyles.line} />
@@ -343,16 +335,6 @@ export default BookingDetail = ({route}) => {
                         )}
                     />
                 </View>
-                <TouchableOpacity onPress={() => {
-                    getTotal()
-                }}>
-                    <Text>Tổng Tiền</Text>
-                    {
-                        unitPrice > 0 && <Text>{unitPrice}</Text>
-                    }
-                    
-                </TouchableOpacity>
-                {/* <Text>{unitPrice}</Text> */}
                 <View style={BookingDetailStyles.line} />
                 {
                     loading ? <ActivityIndicator /> :
@@ -364,8 +346,14 @@ export default BookingDetail = ({route}) => {
                 <Text style={BookingDetailStyles.txtConfirm}>Đánh Giá</Text>
 
                 {/* Comments View */}
-                <View>
-
+                <View style={BookingDetailStyles.viewComment}>
+                    <View style={BookingDetailStyles.viewInforUser}>
+                        <Image source={{uri: 'https://res.cloudinary.com/dvevyvqyt/pkw5fui4795zazpplp2p'}} 
+                        style={BookingDetailStyles.avatarUser}/>
+                        <Text style={BookingDetailStyles.textNameUser}>Cương Trần</Text>
+                    </View>
+                    <Text style={BookingDetailStyles.textComment}>Quá tệ, đề nghị mọi người đừng đặt chỗ này!!! shshsdh snnsns
+                    snsnss msmmllslsl nnnncncncn sjdjjdjdj snnsnsn</Text>
                 </View>
             </View>
         </ScrollView>
