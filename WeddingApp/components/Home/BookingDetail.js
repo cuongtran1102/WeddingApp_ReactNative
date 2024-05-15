@@ -15,9 +15,6 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { formattedNumber } from "../../configs/Utils";
 import CryptoJS from 'crypto-js';
 
-
-// Zalo pay
-
 const { PayZaloBridge } = NativeModules;
 
 const payZaloBridgeEmitter = new NativeEventEmitter(PayZaloBridge);
@@ -78,13 +75,9 @@ export default BookingDetail = ({ route, navigation }) => {
     const [loadingTotal, setLoadingTotal] = useState(null)
     const [loadingOrder, setLoadingOrder] = useState(false)
     const [isPushBtn, setIsPushBtn] = useState(false)
-
-    // Zalopay
-    // const [link, setLink] = useState('')
     const [token, setToken] = useState('')
     const [returncode, setReturnCode] = useState('')
     const [order, setOrder] = useState(null)
-    // const [linked, setLink] = useState('')
     const [url, setUrl] = useState('test')
     const [responseJson, setResponseJson] = useState(null)
     const [mac, setMac] = useState(null)
@@ -109,10 +102,6 @@ export default BookingDetail = ({ route, navigation }) => {
         let description = "Thanh toán đơn hàng đặt tiệc #" + apptransid
         let hmacInput = appid + "|" + apptransid + "|" + appuser + "|" + amount + "|" + apptime + "|" + embeddata + "|" + item
         let mac = CryptoJS.HmacSHA256(hmacInput, "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL")
-        // console.log('====================================');
-        // console.log("hmacInput: " + hmacInput);
-        // console.log("mac: " + mac)
-        // console.log('====================================');
         var order = {
             'app_id': appid,
             'app_user': appuser,
@@ -127,8 +116,6 @@ export default BookingDetail = ({ route, navigation }) => {
         }
 
         setMac(order['mac'])
-
-        // console.log(order)
 
         let formBody = []
         for (let i in order) {
@@ -150,7 +137,6 @@ export default BookingDetail = ({ route, navigation }) => {
                 setToken(res.zp_trans_token)
                 setReturnCode(res.return_code)
                 setResponseJson(res)
-                // console.log(res.order_url)
             })
             .catch((error) => {
                 console.log("error ", error)
@@ -224,9 +210,17 @@ export default BookingDetail = ({ route, navigation }) => {
     const getTotal = async () => {
         setLoadingTotal(true)
         setIsPushBtn(false)
+        if (value === null) {
+            ToastAndroid.showWithGravity(
+                'Hãy chọn buổi tổ chức tiệc',
+                ToastAndroid.SHORT,
+                ToastAndroid.TOP
+            );
+            setLoadingTotal(false);
+            return;
+        }
         let menuSelected = await fetchApiMenuDetail(counterValue)
         let serviceSelected = await fetchApiServiceDetail()
-
         let totalMenu = menuSelected.reduce((total, current) => total + parseFloat(current.unit_price) * counterValue, 0)
         let totalService = serviceSelected.reduce((total, current) => total + parseFloat(current.unit_price), 0)
         setUnitPrice(formattedNumber(totalMenu + totalService + parseFloat(getUnitPrice(value))))
@@ -258,18 +252,9 @@ export default BookingDetail = ({ route, navigation }) => {
             }
 
             try {
-                if (value === null) {
-                    ToastAndroid.showWithGravity(
-                        'Hãy chọn buổi tổ chức tiệc',
-                        ToastAndroid.SHORT,
-                        ToastAndroid.TOP
-                    );
-                    return;
-                }
                 console.log(value)
                 let res = await AuthAPI(token).post(Endpoints['party']['add'], data)
                 console.log('Đặt tiệc thành công')
-                // Alert.alert('Đặt Tiệc Thành Công')
             } catch(ex) {
                 console.log('Có lỗi xảy ra. Vui lòng thử lại')
                 console.log(ex)
@@ -316,15 +301,11 @@ export default BookingDetail = ({ route, navigation }) => {
         loadFeedbacks()
 
         if (returncode === 1) {
-            // Linking.openURL(responseJson.order_url)
             submit()
-            Alert.alert('Đặt tiệc thành công vui lòng thanh toán cho zalopay')
+            Alert.alert('Thông báo', 'Đặt tiệc thành công vui lòng thanh toán cho zalopay')
             
             setReturnCode(null)
         }
-        // if (responseJson !== null) {
-        //     Linking.openURL(responseJson.order_url)
-        // }
 
         console.log('button party, ', isPushBtn)
     }, [weddingHall, returncode])
@@ -410,7 +391,6 @@ export default BookingDetail = ({ route, navigation }) => {
                         value={selectedMenu}
                         search
                         searchPlaceholder="Tìm..."
-                        // maxSelect={10}
                         onChange={items => setSelectedMenu(items)}
                         renderLeftIcon={() => (
                             <AntDesign
@@ -475,7 +455,6 @@ export default BookingDetail = ({ route, navigation }) => {
                         value={selectedService}
                         search
                         searchPlaceholder="Tìm..."
-                        // maxSelect={7}
                         onChange={item => {
                             setSelectedService(item);
                         }}
