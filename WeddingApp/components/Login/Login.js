@@ -7,8 +7,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserContext from "../../contexts/UserContext";
 import { CLIENT_ID, CLIENT_SECRET } from "../../configs/Enum";
 export default Login = ({navigation}) =>{
-    const [username, setUsername] = useState('angu8uhzu');
-    const [password, setPassword] = useState('admin');
+    const [username, setUsername] = useState('anhquoc0304');
+    const [password, setPassword] = useState('123456');
     const [, dispatch] = useContext(UserContext)
     const [loading, setLoading] = useState(false)
 

@@ -15,6 +15,7 @@ export default Feedback = ({ route, navigation }) => {
     const [loading, setLoading] = useState(false)
     const [content, setContent] = useState('')
     const [feedBack, setFeedBack] = useState(null)
+    const [isComment, setIsComment] = useState(false)
 
 
     // function
@@ -30,6 +31,7 @@ export default Feedback = ({ route, navigation }) => {
 
             console.log(data)
             Alert.alert('Gửi phản hồi thành công')
+            setIsComment(true)
         } catch (ex) {
             Alert.alert('Gửi phản hồi thất bại')
         } finally {
@@ -64,7 +66,7 @@ export default Feedback = ({ route, navigation }) => {
 
         loadParty()
         get_feedback()
-    }, [partyId])
+    }, [partyId, isComment])
 
     if (party === null) return <ActivityIndicator />
 

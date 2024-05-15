@@ -44,7 +44,7 @@ export default CancelParty = () => {
     // use effect
     useEffect(() => {
         loadParitiesPending()
-    }, [isChange])
+    }, [isChange, refreshing])
 
 
     if (parties === null) return <ActivityIndicator />
