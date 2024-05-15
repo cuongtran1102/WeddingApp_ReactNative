@@ -7,8 +7,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserContext from "../../contexts/UserContext";
 import { CLIENT_ID, CLIENT_SECRET } from "../../configs/Enum";
 export default Login = ({navigation}) =>{
-    const [username, setUsername] = useState('anhquoc0304');
-    const [password, setPassword] = useState('123456');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
     const [, dispatch] = useContext(UserContext)
     const [loading, setLoading] = useState(false)
 
@@ -52,7 +52,7 @@ export default Login = ({navigation}) =>{
                     <Ionicons name="person-outline" size={24} color='#1e90ff' style={{ marginRight: 10 }} />
                     <TextInput
                     onChangeText={evt => setUsername(evt)}
-                        placeholder="UserName"
+                        placeholder="Tên đăng nhập"
                         keyboardType="visible-password"
                         maxLength={16}
                         style={LoginStyles.textInput}
@@ -63,7 +63,7 @@ export default Login = ({navigation}) =>{
                     <Ionicons name="lock-closed-outline" size={24} color='#1e90ff' style={{ marginRight: 10 }} />
                     <TextInput
                     onChangeText={evt => setPassword(evt)}
-                        placeholder="Password"
+                        placeholder="Mật khẩu"
                         maxLength={16}
                         secureTextEntry={true}
                         style={LoginStyles.textInput}
