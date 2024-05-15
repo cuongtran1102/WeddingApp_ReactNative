@@ -29,7 +29,7 @@ export default RecentlyBooking = () => {
     }
     useEffect(() => {
         loadHistory()
-    }, [])
+    }, [refreshing])
 
     if (parties === null) return <ActivityIndicator />
 
