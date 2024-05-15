@@ -77,6 +77,7 @@ export default BookingDetail = ({ route, navigation }) => {
     const [feedbacks, setFeedbacks] = useState(null)
     const [loadingTotal, setLoadingTotal] = useState(null)
     const [loadingOrder, setLoadingOrder] = useState(false)
+    const [isPushBtn, setIsPushBtn] = useState(false)
 
     // Zalopay
     // const [link, setLink] = useState('')
@@ -222,6 +223,7 @@ export default BookingDetail = ({ route, navigation }) => {
 
     const getTotal = async () => {
         setLoadingTotal(true)
+        setIsPushBtn(false)
         let menuSelected = await fetchApiMenuDetail(counterValue)
         let serviceSelected = await fetchApiServiceDetail()
 
@@ -229,7 +231,7 @@ export default BookingDetail = ({ route, navigation }) => {
         let totalService = serviceSelected.reduce((total, current) => total + parseFloat(current.unit_price), 0)
         setUnitPrice(formattedNumber(totalMenu + totalService + parseFloat(getUnitPrice(value))))
         setLoadingTotal(false)
-        
+        setIsPushBtn(true)
     }
 
 
@@ -297,6 +299,7 @@ export default BookingDetail = ({ route, navigation }) => {
             setSelectedService([])
             setUnitPrice(0)
             setCounterValue(1) 
+            setIsPushBtn(false)
         }
 
         const loadFeedbacks = async () => {
@@ -316,10 +319,14 @@ export default BookingDetail = ({ route, navigation }) => {
             // Linking.openURL(responseJson.order_url)
             submit()
             Alert.alert('Đặt tiệc thành công vui lòng thanh toán cho zalopay')
+            
+            setReturnCode(null)
         }
-        if (responseJson !== null) {
-            Linking.openURL(responseJson.order_url)
-        }
+        // if (responseJson !== null) {
+        //     Linking.openURL(responseJson.order_url)
+        // }
+
+        console.log('button party, ', isPushBtn)
     }, [weddingHall, returncode])
 
     useEffect(() => {
@@ -493,7 +500,9 @@ export default BookingDetail = ({ route, navigation }) => {
                 </View>
                 <View style={BookingDetailStyles.line} />
                 <View style={BookingDetailStyles.viewTotal}>
-                    <TouchableOpacity style={BookingDetailStyles.buttonTotal} onPress={() => getTotal()}>
+                    <TouchableOpacity style={BookingDetailStyles.buttonTotal} onPress={() => {
+                        getTotal()
+                    }}>
                         {
                             loadingTotal ? <ActivityIndicator /> :
                                 <View style={BookingDetailStyles.contentTotal}>
@@ -506,10 +515,11 @@ export default BookingDetail = ({ route, navigation }) => {
                 </View>
                 <View style={BookingDetailStyles.line} />
                 {
-                    loadingOrder ? <ActivityIndicator /> :
-                        <TouchableOpacity style={BookingDetailStyles.btnBookingParty} onPress={/*submit*/ createOrder}>
+                        loadingOrder ? <ActivityIndicator /> :
+                            isPushBtn && <TouchableOpacity style={BookingDetailStyles.btnBookingParty} onPress={createOrder}>
                             <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'white' }}>Đặt Tiệc</Text>
                         </TouchableOpacity>
+                    
                 }
                 <View style={BookingDetailStyles.line} />
                 <Text style={BookingDetailStyles.txtConfirm}>Đánh Giá</Text>

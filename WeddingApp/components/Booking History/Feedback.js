@@ -28,8 +28,6 @@ export default Feedback = ({ route, navigation }) => {
                 'content': content,
                 'wedding_hall_id': party.wedding_hall.id
             })
-
-            console.log(data)
             Alert.alert('Gửi phản hồi thành công')
             setIsComment(true)
         } catch (ex) {
